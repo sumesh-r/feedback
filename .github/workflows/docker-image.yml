@@ -20,9 +20,15 @@ jobs:
       with:
         username: ${{ secrets.DOCK_USERNAME }}
         password: ${{ secrets.DOCK_PASSWD }}
-    - name: Build and Push to Docker Hub
+    - name: Build and Push Server
       uses: docker/build-push-action@v3
       with:
         context: ./server
-        tags: techyfuzz123/feedback-server:latest, techyfuzz123/feedback-server:${{ github.run_number }}
+        tags: tamilarasug/feedback-server:latest, tamilarasug/feedback-server:${{ github.run_number }}
+        push: true
+    - name: Build and Push Client
+      uses: docker/build-push-action@v3
+      with:
+        context: ./client
+        tags: tamilarasug/feedback-client:latest, tamilarasug/feedback-client:${{ github.run_number }}
         push: true
