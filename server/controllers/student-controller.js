@@ -50,6 +50,149 @@ const addStudents = async (req, res) => {
   // }
 };
 
+const addStudentForAdvisor = async (req, res) => {
+  const { regNo, dob, password } = req.body;
+
+  let student;
+
+  if (
+    !/([0-2]{1}[0-9]{1}|3[0-1]{1})[/](0[1-9]|1[0-2])[/]([0-9]{4})/.test(dob)
+  ) {
+    return res.status(409).json({ eMessage: "incorrect dob format" });
+  }
+
+  try {
+    student = await Student.findOne({ regNo: regNo });
+    if (student) {
+      return res.status(409).json({ message: "student already exists" });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  let hashPassword;
+
+  try {
+    hashPassword = await bcrypt.hash(password, 10);
+  } catch (error) {
+    return res.status(409).json({ message: "need password" });
+  }
+
+  try {
+    student = await Student({
+      ...req.body,
+      password: hashPassword,
+      degree: req.degree,
+      section: req.section,
+      batch: req.batch,
+    }).save();
+    return res.status(200).json("added student");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const addStudentForAdmin = async (req, res) => {
+  const { regNo, dob, password } = req.body;
+
+  let student;
+
+  if (
+    !/([0-2]{1}[0-9]{1}|3[0-1]{1})[/](0[1-9]|1[0-2])[/]([0-9]{4})/.test(dob)
+  ) {
+    return res.status(409).json({ eMessage: "incorrect dob format" });
+  }
+
+  try {
+    student = await Student.findOne({ regNo: regNo });
+    if (student) {
+      return res.status(409).json({ message: "student already exists" });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  let hashPassword;
+
+  try {
+    hashPassword = await bcrypt.hash(password, 10);
+  } catch (error) {
+    return res.status(409).json({ message: "need password" });
+  }
+
+  try {
+    student = await Student({
+      ...req.body,
+      password: hashPassword,
+    }).save();
+    return res.status(200).json("added student");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const updateStudentForAdvisor = async (req, res) => {
+  const { regNo, dob } = req.body;
+
+  if (
+    !/([0-2]{1}[0-9]{1}|3[0-1]{1})[/](0[1-9]|1[0-2])[/]([0-9]{4})/.test(dob)
+  ) {
+    return res.status(409).json({ eMessage: "incorrect dob format" });
+  }
+
+  let student;
+
+  try {
+    student = await Student.findOne({ regNo: regNo });
+    if (!student) {
+      return res.status(409).json({ message: "student doesn't exists" });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+
+  try {
+    student = await Student.updateOne(
+      { regNo: regNo },
+      { $set: { name: req.body.name, dob: req.body.dob } }
+    );
+
+    return res.status(200).json("updated student");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const updateStudentForAdmin = async (req, res) => {
+  const { regNo, dob } = req.body;
+
+  if (
+    !/([0-2]{1}[0-9]{1}|3[0-1]{1})[/](0[1-9]|1[0-2])[/]([0-9]{4})/.test(dob)
+  ) {
+    return res.status(409).json({ eMessage: "incorrect dob format" });
+  }
+
+  let student;
+
+  try {
+    student = await Student.findOne({ regNo: regNo });
+    if (!student) {
+      return res.status(409).json({ message: "student doesn't exists" });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+
+  try {
+    student = await Student.updateOne(
+      { regNo: regNo },
+      { $set: { name: req.body.name, dob: req.body.dob } }
+    );
+
+    return res.status(200).json("updated student");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 /*  
     This Controller will send the data of the student whose register
     number is provided from the client
@@ -108,7 +251,7 @@ const updateStudents = async (req, res) => {
 /* 
     This Controller will delete the particular student
 */
-const deleteStudents = async (req, res) => {
+const deleteStudent = async (req, res) => {
   const { regNo } = req.body;
 
   if (!regNo) {
@@ -147,7 +290,7 @@ const getStudentsForAdvisor = async (req, res) => {
   try {
     students = await Student.find(
       filter,
-      "regNo name batch degree section -_id"
+      "regNo name dob batch degree section -_id"
     );
   } catch (error) {
     console.log(error);
@@ -178,14 +321,17 @@ const getAllStudentsForAdmin = async (req, res) => {
 
 const getStudentsForAdmin = async (req, res) => {
   let students;
-  const {batch, degree, section} = req.body
+  const { batch, degree, section } = req.body;
 
   try {
-    students = await Student.find({
-      batch: batch,
-      degree: degree,
-      section: section
-    }, "regNo name batch degree section -_id");
+    students = await Student.find(
+      {
+        batch: batch,
+        degree: degree,
+        section: section,
+      },
+      "regNo name batch dob degree section -_id"
+    );
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);
@@ -202,8 +348,12 @@ module.exports = {
   getStudent,
   getStudents,
   updateStudents,
-  deleteStudents,
+  deleteStudent,
   getStudentsForAdvisor,
   getStudentsForAdmin,
-  getAllStudentsForAdmin
+  getAllStudentsForAdmin,
+  addStudentForAdvisor,
+  addStudentForAdmin,
+  updateStudentForAdvisor,
+  updateStudentForAdmin,
 };

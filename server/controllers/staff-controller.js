@@ -170,7 +170,7 @@ const getAdvisorsForAdmin = async (req, res) => {
   let staff;
 
   try {
-    staff = await Staff.find({role: "ADVISOR"}, "-_id -password -role");
+    staff = await Staff.find({ role: "ADVISOR" }, "-_id -password -role");
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);
@@ -182,11 +182,98 @@ const getAdvisorsForAdmin = async (req, res) => {
   res.status(200).json([...staff]);
 };
 
+const deleteAdvisorForAdmin = async (req, res) => {
+  const { userName } = req.body;
+  let staff;
+
+  try {
+    staff = await Staff.findOne({ userName: userName });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+
+  if (!staff) {
+    return res.status(409).json({ eMessage: "staff does'nt exists" });
+  }
+
+  try {
+    staff = await Staff.deleteOne({ userName: userName });
+    return res.status(200).json("Staff Deleted");
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+};
+
+const addAdvisorForAdmin = async (req, res) => {
+  const { userName, password } = req.body;
+  let staff;
+
+  try {
+    staff = await Staff.findOne({ userName: userName });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+
+  if (staff) {
+    return res.status(409).json({ eMessage: "staff already exists" });
+  }
+
+  let hashPassword;
+
+  try {
+    hashPassword = await bcrypt.hash(password, 10);
+  } catch (error) {
+    return res.status(409).json({ message: "need password" });
+  }
+
+  try {
+    staff = await Staff({
+      ...req.body,
+      role: "ADVISOR",
+      password: hashPassword,
+    }).save();
+    return res.status(200).json("Staff Added");
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+};
+
+const updateAdvisorForAdmin = async (req, res) => {
+  const { userName } = req.body;
+  let staff;
+
+  try {
+    staff = await Staff.findOne({ userName: userName });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+
+  if (!staff) {
+    return res.status(409).json({ eMessage: "staff does'nt exists" });
+  }
+
+  try {
+    staff = await Staff.updateOne({userName: userName}, {...req.body})
+    return res.status(200).json("Staff Added");
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+};
+
 module.exports = {
   addStaff,
   getUser,
   updateUser,
   getDashboardDetailsForAdvisor,
   deleteUser,
+  updateAdvisorForAdmin,
   getAdvisorsForAdmin,
+  deleteAdvisorForAdmin,
+  addAdvisorForAdmin,
 };

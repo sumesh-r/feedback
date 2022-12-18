@@ -2,9 +2,20 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useGlobalFilter, useSortBy, useTable } from "react-table";
 import { GlobalFilter } from "@components/GlobalFilter";
 import UseFetch from "@hooks/useFetch";
+import { HiPencilAlt, HiTrash } from "react-icons/hi";
+import { useRouter } from "next/router";
+import FeedbackModel from "@adminComponents/FeedbackModel";
 
 const Feedbacks = () => {
   const [feedbacks, setFeedbacks] = useState([]);
+  const [openAddFeedbackModal, setOpenAddFeedbackModal] = useState(false);
+  const [details, setDetails] = useState({});
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const handleFeedbackModal = () => {
+    setOpenAddFeedbackModal(!openAddFeedbackModal);
+  };
 
   const fetchFeedbacks = async () => {
     const response = await UseFetch("GET", "/staff/a/feedbacks").then(
@@ -31,27 +42,25 @@ const Feedbacks = () => {
   const feedbacksColumns = useMemo(
     () =>
       feedbacks[0]
-        ? Object.keys(feedbacks[0])
-            // .filter((key) => key !== "subjects")
-            .map((key) => {
-              if (key === "isLive")
-                return {
-                  Header: key,
-                  accessor: key,
-                  Cell: ({ value }) => (
-                    <span
-                      className={`${
-                        value === "Active"
-                          ? "rounded p-0.5 bg-green-100 text-green-800"
-                          : "rounded p-0.5 bg-red-100 text-red-800"
-                      }`}
-                    >
-                      {value}
-                    </span>
-                  ),
-                };
-              return { Header: key, accessor: key };
-            })
+        ? Object.keys(feedbacks[0]).map((key) => {
+            if (key === "isLive")
+              return {
+                Header: key,
+                accessor: key,
+                Cell: ({ value }) => (
+                  <span
+                    className={`${
+                      value === "Active"
+                        ? "rounded p-0.5 bg-green-100 text-green-800"
+                        : "rounded p-0.5 bg-red-100 text-red-800"
+                    }`}
+                  >
+                    {value}
+                  </span>
+                ),
+              };
+            return { Header: key, accessor: key };
+          })
         : [],
     [feedbacks]
   );
@@ -63,7 +72,26 @@ const Feedbacks = () => {
         id: "Edit",
         Header: "Edit",
         Cell: ({ row }) => (
-          <button onClick={() => alert(row.values.isLive)}>Edit</button>
+          <HiPencilAlt
+            className="text-dark-purple w-full text-center cursor-pointer"
+            onClick={() => {
+              router.push(
+                `/dashboard/admin/feedback?s=${row.values.semester}&f=${row.values.feedbackNo}&b=${row.values.batch}&d=${row.values.degree}&sc=${row.values.section}`
+              );
+            }}
+          />
+        ),
+      },
+      {
+        id: "Delete",
+        Header: "Delete",
+        Cell: ({ row }) => (
+          <HiTrash
+            className="text-dark-purple w-full text-center cursor-pointer"
+            onClick={() => {
+              deleteFeedback(row.values);
+            }}
+          />
         ),
       },
     ]);
@@ -78,6 +106,18 @@ const Feedbacks = () => {
     tableHooks,
     useSortBy
   );
+
+  const deleteFeedback = async (data) => {
+    let body = {
+      batch: data.batch,
+      degree: data.degree,
+      section: data.section,
+      semester: data.semester,
+      feedbackNo: data.feedbackNo,
+    };
+    const response = await UseFetch("POST", "/staff/a/feedback/delete", body);
+    fetchFeedbacks();
+  };
 
   const {
     getTableProps,
@@ -106,19 +146,34 @@ const Feedbacks = () => {
         Feedbacks
       </h1>
 
+      {openAddFeedbackModal ? (
+        <FeedbackModel
+          callback={handleFeedbackModal}
+          fetchFeedbacks={fetchFeedbacks}
+          isEdit={false}
+        />
+      ) : (
+        ""
+      )}
+
       {/* feedbacks */}
-      <div className=" w-10/12 flex flex-row justify-between items-center">
+      <div className=" w-9/12 flex flex-row h-5 justify-between items-center">
         <GlobalFilter
           preGlobalFilteredRows={preGlobalFilteredRows}
           setGlobalFilter={setGlobalFilter}
           globalFilter={state.globalFilter}
         />
-        <button
-          className="bg-blue-500 mt-10 hover:bg-blue-700 h-10
-         text-white font-bold py-2 px-4 rounded-full"
-        >
-          Add Feedback
-        </button>
+        <div className=" rounded-lg mt-5">
+          <button
+            onClick={() => {
+              setOpenAddFeedbackModal(true);
+            }}
+            className="bg-dark-purple bg-opacity-30 
+        py-2 px-4 rounded text-white shadow-md"
+          >
+            Add Feedback
+          </button>
+        </div>
       </div>
       {/* table */}
       <div className="w-full flex justify-center">

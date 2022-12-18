@@ -25,7 +25,6 @@ const updateReport = async (req, res, next) => {
   });
 };
 
-
 // middleware
 //middleware function to check if the incoming request in authenticated:
 const checkStaffAuth = async (req, res, next) => {
@@ -131,6 +130,7 @@ const checkStudentAuth = async (req, res, next) => {
     }
     if (!student) return res.status(401).json({ eMessage: "unAuthorized" });
 
+    req.regNo = student.regNo;
     req.batch = student.batch;
     req.degree = student.degree;
     req.section = student.section;

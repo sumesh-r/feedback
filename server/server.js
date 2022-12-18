@@ -44,7 +44,7 @@ const IS_DEVELOPMENT = process.env.IS_DEVELOPMENT === "true";
 // };
 
 const corsOptions = {
-  origin: `${process.env.FRONT_URL}`,
+  origin: whitelist,
   optionsSuccessStatus: 200, // For legacy browser support
   credentials: true,
   methods: "GET, PUT, POST, DELETE",
@@ -111,10 +111,13 @@ try {
 // restore cmd
 // mongorestore mongodb://username:password@0.0.0.0:27017/feedback --gzip --archive=./temp.gz --authenticationDatabase=admin
 
-// TODO: cors stop postman
-// TODO: change useEffect to something
-// TODO: removed unwanted dependencies
-// TODO: change way of handling passwords
-// TODO: add electives to subject
+// * TODO: cors stop postman
+// * TODO: removed unwanted dependencies
+// * TODO: change way of handling passwords
+// * TODO: update server automatically
+// TODO: check if student regNo belongs to same class in elective
 // TODO: student submit feedback
-// TODO: update server automatically
+// TODO: change useEffect to something
+// TODO: generate report after initiating feedback
+// TODO: crud advisors by admin
+// TODO: reset passwords

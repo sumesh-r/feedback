@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import ReactTable from "@components/ReactTable";
 import UseFetch from "@hooks/useFetch";
+
 // staff/dashboard
 export const Dashboard = () => {
   const [students, setStudents] = useState([]);
@@ -122,7 +123,7 @@ export const Dashboard = () => {
 
       <ReactTable columns={studentsColumns} data={studentsData} />
     </div>
-  );
-};
+  )
+}
 
 export default Dashboard;

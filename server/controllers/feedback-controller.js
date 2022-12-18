@@ -186,6 +186,51 @@ const deleteFeedback = async (req, res) => {
   res.status(200).json({ message: "feedback deleted successfully" });
 };
 
+const deleteFeedbackForAdmin = async (req, res) => {
+  const filter = {
+    batch: req.body.batch,
+    degree: req.body.degree,
+    section: req.body.section,
+    semester: req.body.semester,
+    feedbackNo: req.body.feedbackNo,
+  };
+
+  let feedback, students;
+
+  try {
+    feedback = await Feedback.findOne({
+      ...filter,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+
+  if (!feedback) {
+    return res.status(409).json("feedback does'nt exists");
+  }
+
+  try {
+    feedback = await Feedback.deleteOne({
+      ...req.body,
+    });
+    students = await Student.updateMany(filter, {
+      $pull: {
+        feedbacks: {
+          semester: filter.semester,
+          feedbackNo: req.body.feedbackNo,
+        },
+      },
+    });
+    console.log(students);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+
+  res.status(200).json({ message: "feedback deleted successfully" });
+};
+
 const addFeedbackSubject = async (req, res) => {
   const filter = {
     batch: req.batch,
@@ -347,7 +392,7 @@ const getFeedbacksForAdvisor = async (req, res) => {
   try {
     feedbacks = await Feedback.find(
       { filter },
-      "-subjects -_id -__v -createAt -updatedAt"
+      "-subjects -electiveSubjects -_id -__v -createAt -updatedAt"
     );
   } catch (error) {
     console.log(error);
@@ -385,11 +430,38 @@ const getFeedbackForAdvisor = async (req, res) => {
   res.status(200).json(feedback);
 };
 
+const getFeedbackForAdmin = async (req, res) => {
+  const filter = {
+    batch: req.body.batch,
+    degree: req.body.degree,
+    section: req.body.section,
+    semester: req.body.semester,
+    feedbackNo: req.body.feedbackNo,
+  };
+
+  let feedback;
+  try {
+    feedback = await Feedback.findOne(filter, "-_id -__v");
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+
+  if (!feedback) {
+    return res.status(409).json({ message: "feedback doesn't exists" });
+  }
+
+  res.status(200).json(feedback);
+};
+
 const getFeedbacksForAdmin = async (req, res) => {
   let feedbacks;
 
   try {
-    feedbacks = await Feedback.find({}, "-subjects -_id -__v");
+    feedbacks = await Feedback.find(
+      {},
+      "-subjects -electiveSubjects -createdAt -updatedAt -_id -__v"
+    );
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);
@@ -423,10 +495,25 @@ const getFeedbackForStudent = async (req, res) => {
     return res.status(409).json({ message: "no feedback to submit" });
   }
 
+  let electiveSubjects = [];
+  feedback.electiveSubjects.map((elective, idx) => {
+    if (Number(elective.regNo) === req.regNo) {
+      electiveSubjects.push({
+        subjectCode: elective.subjectCode,
+        subjectName: elective.subjectName,
+        faculty: elective.faculty,
+        facultyPosition: elective.facultyPosition,
+        facultyDepartment: elective.facultyDepartment,
+      });
+    }
+  });
+
+  feedback.electiveSubjects = electiveSubjects;
+
   res.status(200).json({ feedback });
 };
 
-const updateFeedback = async (req, res) => {
+const updateFeedbackForAdvisor = async (req, res) => {
   const filter = {
     batch: req.batch,
     degree: req.degree,
@@ -440,6 +527,7 @@ const updateFeedback = async (req, res) => {
   };
 
   const updateSubjectsData = [...req.body.subjects];
+  const updateElectiveSubjectsData = [...req.body.electiveSubjects];
 
   let feedback;
 
@@ -457,60 +545,13 @@ const updateFeedback = async (req, res) => {
   }
 
   try {
-    // feedback = await Feedback.bulkWrite(
-    //   [
-    //     {
-    //       updateOne: {
-    //         filter: filter,
-    //         update: {
-    //           $set: {
-    //             isLive: updateData.isLive,
-    //           },
-    //         },
-    //       },
-    //     },
-    //     updatSubjectData.map((subject) => ({
-    //       updateOne: {
-    //         filter: { ...filter, "subjects.subjectCode": subject.subjectCode },
-    //         update: {
-    //           $set: {
-    //             "subjects.$.subjectCode": subject.subjectCode,
-    //             "subjects.$.subjectName": subject.subjectName,
-    //             "subjects.$.faculty": subject.faculty,
-    //             "subjects.$.facultyPosition": subject.facultyPosition,
-    //             "subjects.$.facultyDepartment": subject.facultyDepartment,
-    //           },
-    //           $setOnInsert: {
-    //             "subjects.$.subjectCode": subject.subjectCode,
-    //             "subjects.$.subjectName": subject.subjectName,
-    //             "subjects.$.faculty": subject.faculty,
-    //             "subjects.$.facultyPosition": subject.facultyPosition,
-    //             "subjects.$.facultyDepartment": subject.facultyDepartment,
-    //           },
-    //         },
-    //         upsert: true,
-    //       },
-    //     })),
-    //   ],
-    //   function (err, result) {
-    //     if (err) {
-    //       // res.send(err);
-    //       console.log(err);
-    //     } else {
-    //       console.log(result);
-    //       // res.send(result);
-    //     }
-    //   }
-    // );
-
     feedback = await Feedback.updateOne(filter, {
       $set: {
         isLive: updateData.isLive,
-        subjects: updateSubjectsData
+        subjects: updateSubjectsData,
+        electiveSubjects: updateElectiveSubjectsData,
       },
     });
-
-    console.log(feedback);
 
     // updatSubjectsData.map(async (subject) => {
     //   feedback = await Feedback.updateOne(
@@ -535,38 +576,85 @@ const updateFeedback = async (req, res) => {
     // });
 
     // const resp = await Feedback.bulkWrite([
-      // {
-      //   updateOne: {
-      //     filter: { name: "Will Riker" },
-      //     update: { age: 29 },
-      //     upsert: true,
-      //   },
-      // },
-      // updatSubjectsData.map((subject) => ({
-      //   updateOne: {
-      //     filter: { ...filter, "subjects.subjectCode": subject.subjectCode },
-      //     update: {
-      //       $set: {
-      //         "subjects.$.subjectCode": subject.subjectCode,
-      //         "subjects.$.subjectName": subject.subjectName,
-      //         "subjects.$.faculty": subject.faculty,
-      //         "subjects.$.facultyPosition": subject.facultyPosition,
-      //         "subjects.$.facultyDepartment": subject.facultyDepartment,
-      //       },
-      //     },
-      //     upsert: true,
-      //   },
-      // })),
+    // {
+    //   updateOne: {
+    //     filter: { name: "Will Riker" },
+    //     update: { age: 29 },
+    //     upsert: true,
+    //   },
+    // },
+    // updatSubjectsData.map((subject) => ({
+    //   updateOne: {
+    //     filter: { ...filter, "subjects.subjectCode": subject.subjectCode },
+    //     update: {
+    //       $set: {
+    //         "subjects.$.subjectCode": subject.subjectCode,
+    //         "subjects.$.subjectName": subject.subjectName,
+    //         "subjects.$.faculty": subject.faculty,
+    //         "subjects.$.facultyPosition": subject.facultyPosition,
+    //         "subjects.$.facultyDepartment": subject.facultyDepartment,
+    //       },
+    //     },
+    //     upsert: true,
+    //   },
+    // })),
 
-      // {
-      //   updateOne: {
-      //     filter: { name: "Geordi La Forge" },
-      //     update: { age: 29 },
-      //     upsert: true,
-      //   },
-      // },
+    // {
+    //   updateOne: {
+    //     filter: { name: "Geordi La Forge" },
+    //     update: { age: 29 },
+    //     upsert: true,
+    //   },
+    // },
     // ]);
     // console.log(resp);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+
+  res.status(200).json({ message: "feedback updated successfully" });
+};
+
+const updateFeedbackForAdmin = async (req, res) => {
+  const filter = {
+    batch: req.body.batch,
+    degree: req.body.degree,
+    section: req.body.section,
+    semester: req.body.semester,
+    feedbackNo: req.body.feedbackNo,
+  };
+
+  const updateData = {
+    isLive: req.body.isLive,
+  };
+
+  const updateSubjectsData = [...req.body.subjects];
+  const updateElectiveSubjectsData = [...req.body.electiveSubjects];
+
+  let feedback;
+
+  try {
+    feedback = await Feedback.findOne({
+      ...filter,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+
+  if (!feedback) {
+    return res.status(409).json("feedback does'nt exists");
+  }
+
+  try {
+    feedback = await Feedback.updateOne(filter, {
+      $set: {
+        isLive: updateData.isLive,
+        subjects: updateSubjectsData,
+        electiveSubjects: updateElectiveSubjectsData,
+      },
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);
@@ -581,14 +669,17 @@ const submitFeedbackForStudent = async (req, res) => {
 
 module.exports = {
   addFeedback,
-  updateFeedback,
+  updateFeedbackForAdvisor,
   updateFeedbackSubject,
   addFeedbackSubject,
   deleteFeedbackSubject,
   deleteFeedback,
   getFeedbacksForAdvisor,
   getFeedbackForStudent,
+  getFeedbackForAdmin,
+  updateFeedbackForAdmin,
   getFeedbacksForAdmin,
   getFeedbackForAdvisor,
   submitFeedbackForStudent,
+  deleteFeedbackForAdmin,
 };

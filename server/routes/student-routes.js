@@ -16,11 +16,11 @@ const {
 } = require("../controllers/feedback-controller");
 
 // set routes
-router.post("/", validateData(studentValidationSchema), addStudents);
+router.post("/",validateData(studentValidationSchema), addStudents);
 router.post("/g", getStudents);
 router.get("/", getStudent);
-router.put("/", updateStudents); // not working
-router.delete("/", deleteStudents);
+// router.put("/", updateStudents); // * not working
+// router.delete("/", deleteStudents);
 router.get("/feedback", checkStudentAuth, getFeedbackForStudent);
 router.post("/feedback", checkStudentAuth, submitFeedbackForStudent)
 

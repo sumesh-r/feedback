@@ -1,11 +1,13 @@
 import React from "react";
+import { facultyPositions, departments } from "@utils/constants";
+import { MdCancel, MdCheckCircle } from "react-icons/md";
+
 
 const EditableRow = ({
+  isElective,
   editFormData,
   handleEditFormChange,
   handleCancelClick,
-  departments,
-  facultyPositions,
   idx,
 }) => {
   const isEven = (idx) => idx % 2 === 0;
@@ -17,6 +19,18 @@ const EditableRow = ({
           : "bg-light-white bg-opacity-30"
       }
     >
+      {isElective ? <td className={`px-6 py-4 text-center`}>
+        <input
+          type="text"
+          required="required"
+          placeholder="Enter regNo"
+          name="regNo"
+          className="bg-inherit text-center outline-none"
+          value={editFormData.regNo}
+          readOnly
+        />
+      </td> : ""}
+
       <td className={`px-6 py-4 text-center`}>
         <input
           type="text"
@@ -133,10 +147,10 @@ const EditableRow = ({
 
       <td className={`px-6 py-4 text-center`}>
         <button className="mr-3" type="submit">
-          Okay
+          <MdCheckCircle className="text-dark-purple w-4 h-4" />
         </button>
         <button type="button" onClick={handleCancelClick}>
-          Cancel
+          <MdCancel className="text-dark-purple" />
         </button>
       </td>
     </tr>

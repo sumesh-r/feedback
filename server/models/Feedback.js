@@ -26,6 +26,36 @@ const subjectSchema = mongoose.Schema(
   { _id: false, versionKey: false }
 );
 
+const electiveSubjectSchema = mongoose.Schema(
+  {
+    regNo: {
+      type: String,
+      required: true,
+    },
+    subjectCode: {
+      type: String,
+      required: true,
+    },
+    subjectName: {
+      type: String,
+      required: true,
+    },
+    faculty: {
+      type: String,
+      required: true,
+    },
+    facultyPosition: {
+      type: String,
+      required: true,
+    },
+    facultyDepartment: {
+      type: String,
+      required: true,
+    },
+  },
+  { _id: false, versionKey: false }
+);
+
 const feedbackSchema = mongoose.Schema(
   {
     batch: {
@@ -50,6 +80,7 @@ const feedbackSchema = mongoose.Schema(
     },
     isLive: { type: Boolean, default: false },
     subjects: [subjectSchema],
+    electiveSubjects: [electiveSubjectSchema],
   },
   { versionKey: false, timestamps: true }
 );

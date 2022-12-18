@@ -23,7 +23,7 @@ const AdminDashboard = () => {
 
   const sidebarTitle = useSessionStorage("title");
   if (!sidebarTitle) {
-    sessionStorage.setItem("title", "Dashboard");
+    sessionStorage.setItem("title", "Feedbacks");
   }
   const [current, setCurrent] = useState(useSessionStorage("title"));
 

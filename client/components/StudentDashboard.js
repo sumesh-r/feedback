@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@context/AuthContext";
 import UseFetch from "@hooks/useFetch";
+import { remarks, remarkHeaders } from "@utils/constants";
 
 const StudentDashboard = () => {
   const IS_DEVELOPMENT = process.env.NEXT_PUBLIC_IS_DEVELOPMENT === "true";
-  const { studentLogout } = useAuth();
+  const { studentLogout, fetchUser } = useAuth();
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(false);
   let [error, setError] = useState(null);
@@ -27,6 +28,7 @@ const StudentDashboard = () => {
 
     if (response) {
       const subjects = response.subjects;
+      const electiveSubjects = response.electiveSubjects;
       subjects.map((subject) => {
         (subject["subjectKnowledge"] = -1),
           (subject["clearExplanation"] = -1),
@@ -34,8 +36,15 @@ const StudentDashboard = () => {
           (subject["extraInput"] = -1),
           (subject["teacherStudentRelationship"] = -1);
       });
+      electiveSubjects.map((electiveSubjects) => {
+        (electiveSubjects["subjectKnowledge"] = -1),
+          (electiveSubjects["clearExplanation"] = -1),
+          (electiveSubjects["usageOfTeachingTools"] = -1),
+          (electiveSubjects["extraInput"] = -1),
+          (electiveSubjects["teacherStudentRelationship"] = -1);
+      });
 
-      setSubjects(subjects);
+      setSubjects([...subjects, ...electiveSubjects]);
       setFeedback(response);
     }
   };
@@ -106,14 +115,6 @@ const StudentDashboard = () => {
     </th>
   );
 
-  const headers = [
-    "subjectKnowledge",
-    "clearExplanation",
-    "usageOfTeachingTools",
-    "extraInput",
-    "teacherStudentRelationship",
-  ];
-
   const TableRow = ({ item, column, id }) => {
     return (
       <tr
@@ -124,14 +125,9 @@ const StudentDashboard = () => {
         }
       >
         {column.map((columnItem, index) => {
-          // if (columnItem.value.includes(".")) {
-          //   const itemSplit = columnItem.value.split("."); //['address', 'city']
-          //   return <td key={index}>{item[itemSplit[0]][itemSplit[1]]}</td>;
-          // }
-
           return (
             <td className={`px-6 py-4 text-center outline-none`} key={index}>
-              {headers[index - 2] === columnItem.value ? (
+              {remarkHeaders[index - 2] === columnItem.value ? (
                 <Dropdown id={id} columnItem={columnItem} rowItem={item} />
               ) : (
                 item[`${columnItem.value}`]
@@ -141,24 +137,6 @@ const StudentDashboard = () => {
         })}
       </tr>
     );
-  };
-
-  const checkData = async () => {
-    let unFilled = 0;
-    subjects.map((subject) => {
-      headers.map((header) => {
-        if (subject[header] === -1) {
-          unFilled = unFilled + 1;
-          return;
-        }
-      });
-    });
-    if (unFilled > 0) {
-      setError("fill all fields");
-      return;
-    } else {
-      setError(null);
-    }
   };
 
   const submitFeedback = async () => {
@@ -175,7 +153,6 @@ const StudentDashboard = () => {
           return data;
         }
         if (status === 200) {
-          setA(false);
           return { Message: "feedbackSubmitted", path: "addfeedback" };
         }
         if (status === 409) {
@@ -192,7 +169,7 @@ const StudentDashboard = () => {
     e.preventDefault();
     let unFilled = 0;
     await subjects.map((subject) => {
-      headers.map((header) => {
+      remarkHeaders.map((header) => {
         if (subject[header] === -1) {
           unFilled = unFilled + 1;
           return;
@@ -210,7 +187,7 @@ const StudentDashboard = () => {
   };
 
   function getRandomItem() {
-    const arr = [0,2,4,6,8]
+    const arr = [0, 2, 4, 6, 8];
     // get random index value
     const randomIndex = Math.floor(Math.random() * arr.length);
 
@@ -222,7 +199,7 @@ const StudentDashboard = () => {
 
   const fillData = () => {
     const newValues = subjects.map((subject) => {
-      headers.map((header) => {
+      remarkHeaders.map((header) => {
         subject[header] = getRandomItem();
       });
       return subject;
@@ -232,7 +209,7 @@ const StudentDashboard = () => {
 
   const unFillData = () => {
     const newValues = subjects.map((subject) => {
-      headers.map((header) => {
+      remarkHeaders.map((header) => {
         subject[header] = -1;
       });
       return subject;
@@ -258,14 +235,11 @@ const StudentDashboard = () => {
         className={`outline-none text-center bg-inherit`}
       >
         <option value={-1}>{"select"}</option>
-        <option value={8}>Excellent</option>
-        <option value={6}>Good</option>
-        <option value={4}>Satisfactory</option>
-        <option value={2}>Not Satisfactory</option>
-        <option value={0}>Poor</option>
-        {/* <option value={rowItem[columnItem.value]}>
-          {rowItem[columnItem.value]}
-        </option> */}
+        {remarks.map((remark, idx) => (
+          <option value={remark.value} key={idx}>
+            {remark.title}
+          </option>
+        ))}
       </select>
     );
   };
@@ -289,11 +263,67 @@ const StudentDashboard = () => {
           Logout
         </button>
       </div>
+
+      {/* basic details */}
+      <div className="w-full flex mb-5 justify-center">
+        <div
+          className="flex flex-col md:flex-row items-center
+         w-9/12 justify-between"
+        >
+          {/* <div className="flex items-center mb-4 md:mb-0 md:ml-2">
+            <label htmlFor="name" className="mr-3">
+              Name:
+            </label>
+            <input
+              className="outline-none py-1 px-2 rounded bg-white
+                cursor-not-allowed"
+              type="text"
+              name="name"
+              onChange={(e) => {}}
+              id="name"
+              value={user.name}
+              readOnly
+            />
+          </div>
+
+          <div className="flex items-center mb-4 md:mb-0 md:ml-2">
+            <label htmlFor="regNo" className="mr-3">
+              RegNo:{" "}
+            </label>
+            <input
+              className="outline-none px-2 py-1 rounded bg-white
+               cursor-not-allowed"
+              type="text"
+              name="regNo"
+              id="regNo"
+              value={user.regNo}
+              readOnly
+            />
+          </div> */}
+
+          <div className="flex items-center mb-4 md:mb-0 md:ml-2">
+            <label htmlFor="Dept_&_sec" className="mr-3">
+              Class:{" "}
+            </label>
+            <input
+              className="outline-none px-2 py-1 rounded bg-white
+               cursor-not-allowed"
+              type="text"
+              name="Dept_&_sec"
+              onChange={(e) => {}}
+              id="Dept_&_sec"
+              value={`${feedback.degree} - ${feedback.section}`}
+              readOnly
+            />
+          </div>
+        </div>
+      </div>
+
       {/* basic details of feedback */}
       <div className="w-full flex justify-center">
         <div
           className="flex flex-col md:flex-row items-center
-         w-10/12 justify-evenly"
+         w-9/12 justify-between"
         >
           <div className="flex items-center mb-4 md:mb-0 md:ml-2">
             <label htmlFor="batch" className="mr-3">
@@ -313,22 +343,6 @@ const StudentDashboard = () => {
 
           <div className="flex items-center mb-4 md:mb-0 md:ml-2">
             <label htmlFor="Dept_&_sec" className="mr-3">
-              Class:{" "}
-            </label>
-            <input
-              className="outline-none px-2 py-1 rounded bg-white
-               cursor-not-allowed"
-              type="text"
-              name="Dept_&_sec"
-              onChange={(e) => {}}
-              id="Dept_&_sec"
-              value={`${feedback.degree} - ${feedback.section}`}
-              readOnly
-            />
-          </div>
-
-          <div className="flex items-center mb-4 md:mb-0 md:ml-2">
-            <label htmlFor="Dept_&_sec" className="mr-3">
               Semester:{" "}
             </label>
             <input
@@ -342,8 +356,25 @@ const StudentDashboard = () => {
               readOnly
             />
           </div>
+
+          <div className="flex items-center mb-4 md:mb-0 md:ml-2">
+            <label htmlFor="feedbackNo" className="mr-3">
+              feedback No:{" "}
+            </label>
+            <input
+              className="outline-none px-2 py-1 rounded bg-white
+               cursor-not-allowed"
+              type="text"
+              name="feedbackNo"
+              onChange={(e) => {}}
+              id="feedbackNo"
+              value={feedback.feedbackNo}
+              readOnly
+            />
+          </div>
         </div>
       </div>
+
       {/* error */}
       <div className="mt-8 w-9/12">
         {error ? (
@@ -352,6 +383,7 @@ const StudentDashboard = () => {
           ""
         )}
       </div>
+
       {/* table */}
       <form onSubmit={submitData} className="w-full">
         <div className="w-full flex justify-center">
@@ -368,6 +400,7 @@ const StudentDashboard = () => {
           </button>
         </div>
       </form>
+
       {IS_DEVELOPMENT && (
         <>
           <div className="flex mt-3 w-9/12 justify-end">

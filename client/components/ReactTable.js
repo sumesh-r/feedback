@@ -93,7 +93,7 @@ const ReactTable = ({ columns, data,  noSearch,  }) => {
           </tbody>
         </table>
       </div>
-      ;
+      
     </>
   );
 };

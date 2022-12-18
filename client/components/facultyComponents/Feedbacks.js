@@ -2,7 +2,9 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useSortBy, useTable } from "react-table";
 import UseFetch from "@hooks/useFetch";
 import Loading from "@components/Loading";
+import { HiPencilAlt, HiTrash } from "react-icons/hi";
 import { useRouter } from "next/router";
+import { semesters } from "@utils/constants";
 
 const Feedbacks = () => {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -85,28 +87,26 @@ const Feedbacks = () => {
         id: "Edit",
         Header: "Edit",
         Cell: ({ row }) => (
-          <button
+          <HiPencilAlt
+            className="text-dark-purple w-full text-center cursor-pointer"
             onClick={() => {
               router.push(
-                `/dashboard/feedback?s=${row.values.semester}&f=${row.values.feedbackNo}`
+                `/dashboard/advisor/feedback?s=${row.values.semester}&f=${row.values.feedbackNo}`
               );
             }}
-          >
-            Edit
-          </button>
+          />
         ),
       },
       {
         id: "Delete",
         Header: "Delete",
         Cell: ({ row }) => (
-          <button
+          <HiTrash
+            className="text-dark-purple w-full text-center cursor-pointer"
             onClick={() => {
               deleteFeedback(row.values);
             }}
-          >
-            Delete
-          </button>
+          />
         ),
       },
     ]);
@@ -269,14 +269,9 @@ const Feedbacks = () => {
                                     name="semester"
                                   >
                                     <option>Select</option>
-                                    <option>I</option>
-                                    <option>II</option>
-                                    <option>III</option>
-                                    <option>IV</option>
-                                    <option>V</option>
-                                    <option>VI</option>
-                                    <option>VII</option>
-                                    <option>VIII</option>
+                                    {semesters.map((semester, idx) => (
+                                      <option key={idx}>{semester}</option>
+                                    ))}
                                   </select>
                                   <div
                                     className="pointer-events-none absolute inset-y-0
@@ -379,15 +374,17 @@ const Feedbacks = () => {
              items-center flex-col w-full `}
           >
             <div className=" w-9/12 flex flex-row justify-end items-center">
-              <button
-                className="bg-blue-500 mt-10 hover:bg-blue-700 h-10
-         text-white font-bold py-2 px-4 rounded-full"
-                onClick={() => {
-                  setOpenAddFeedbackModal(true);
-                }}
-              >
-                Add Feedback
-              </button>
+              <div className=" rounded-lg mt-10">
+                <button
+                  onClick={() => {
+                    setOpenAddFeedbackModal(true);
+                  }}
+                  className="bg-dark-purple bg-opacity-30 
+        py-2 px-4 rounded text-white shadow-md"
+                >
+                  Add Feedback
+                </button>
+              </div>
             </div>
             {/* table */}
             <div className="w-full flex justify-center">

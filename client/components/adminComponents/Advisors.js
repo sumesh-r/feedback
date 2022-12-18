@@ -2,27 +2,61 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useGlobalFilter, useSortBy, useTable } from "react-table";
 import { GlobalFilter } from "@components/GlobalFilter";
 import UseFetch from "@hooks/useFetch";
+import { HiPencilAlt, HiTrash } from "react-icons/hi";
+import AdvisorModel from "@adminComponents/AdvisorModel"
 
-const Students = () => {
+
+const Advisors = () => {
   const [advisors, setAdvisors] = useState([]);
+  const [openAdvisorModel, setOpenAdvisorModel] = useState(false);
+  const [editAdvisorModel, setEditAdvisorModel] = useState(false);
+  const [editData, setEditData] = useState({});
 
-  const fetchFeedbacks = async () => {
+  const handleAdvisorModel = () => {
+    setOpenAdvisorModel(!openAdvisorModel)
+  }
+  const handleEditAdvisorModel = () => {
+    setEditAdvisorModel(!editAdvisorModel)
+  }
+
+  const handleDeleteAdvisor = async (userName) => {
+    const body = { userName: userName };
+    const response = await UseFetch(
+      "POST",
+      "/staff/a/advisor/delete",
+      body
+    ).then(function ({ status, data }) {
+      if (status === 401) {
+        router.push("/");
+        return "not 200 status";
+      }
+      if (status === 200) {
+        fetchAdvisors();
+      }
+      return data;
+    });
+  }
+
+  const fetchAdvisors = async () => {
     const response = await UseFetch("GET", "/staff/a/advisors").then(function ({
       status,
       data,
     }) {
-      if (status === 401) return "not 200 status";
+      if (status ===401) {
+          router.push("/")
+          return ""
+      }
       return data;
     });
 
     if (response) {
-      const students = response;
-      setAdvisors(students);
+      const advisors = response;
+      setAdvisors(advisors);
     }
   };
 
-  const studentsData = useMemo(() => [...advisors], [advisors]);
-  const studentsColumns = useMemo(
+  const advisorsData = useMemo(() => [...advisors], [advisors]);
+  const advisorsColumns = useMemo(
     () => [
       {
         Header: "User Name",
@@ -48,10 +82,33 @@ const Students = () => {
     hooks.visibleColumns.push((columns) => [
       ...columns,
       {
-        id: "Edit",
+        id: "edit",
         Header: "Edit",
         Cell: ({ row }) => (
-          <button onClick={() => alert(row.values.userName)}>Edit</button>
+          <HiPencilAlt
+            onClick={() => {
+              setEditData({
+                userName: row.values.userName,
+                degree: row.values.degree,
+                batch: row.values.batch,
+                section: row.values.section,
+              });
+              handleEditAdvisorModel();
+            }}
+            className="text-dark-purple w-full text-center cursor-pointer"
+          />
+        ),
+      },
+      {
+        id: "delete",
+        Header: "Delete",
+        Cell: ({ row }) => (
+          <HiTrash
+            onClick={() => {
+              handleDeleteAdvisor(row.values.userName);
+            }}
+            className="text-dark-purple w-full text-center cursor-pointer"
+          />
         ),
       },
     ]);
@@ -59,8 +116,8 @@ const Students = () => {
 
   const tableInstance = useTable(
     {
-      columns: studentsColumns,
-      data: studentsData,
+      columns: advisorsColumns,
+      data: advisorsData,
     },
     useGlobalFilter,
     tableHooks,
@@ -79,7 +136,7 @@ const Students = () => {
   } = tableInstance;
 
   useEffect(() => {
-    fetchFeedbacks();
+    fetchAdvisors();
   }, []);
 
   const isEven = (idx) => idx % 2 === 0;
@@ -94,6 +151,27 @@ const Students = () => {
         Advisors
       </h1>
 
+      {openAdvisorModel ? (
+        <AdvisorModel
+          isEdit={false}
+          fetchAdvisors={fetchAdvisors}
+          callback={handleAdvisorModel}
+        />
+      ) : (
+        ""
+      )}
+
+      {editAdvisorModel ? (
+        <AdvisorModel
+          isEdit={true}
+          fetchAdvisors={fetchAdvisors}
+          editData={editData}
+          callback={handleEditAdvisorModel}
+        />
+      ) : (
+        ""
+      )}
+
       {/* feedbacks */}
       <div className=" w-9/12 flex flex-row justify-between items-center">
         <GlobalFilter
@@ -101,6 +179,18 @@ const Students = () => {
           setGlobalFilter={setGlobalFilter}
           globalFilter={state.globalFilter}
         />
+        {/* add advisors */}
+        <div className=" rounded-lg mt-5">
+          <button
+            onClick={() => {
+              handleAdvisorModel();
+            }}
+            className="bg-dark-purple bg-opacity-30 
+        py-2 px-4 text-white shadow-md"
+          >
+            Add Advisors
+          </button>
+        </div>
       </div>
       {/* table */}
       <div className="w-full flex justify-center">
@@ -162,4 +252,4 @@ const Students = () => {
   );
 };
 
-export default Students;
+export default Advisors;

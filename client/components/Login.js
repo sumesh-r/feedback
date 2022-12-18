@@ -38,7 +38,7 @@ const Login = () => {
       setStudentError("date should be in the format dd/mm/yyyy");
       return;
     }
-    if (studentPassword.length >= 10 || studentPassword.length < 5) {
+    if (studentPassword.length >= 15 || studentPassword.length < 5) {
       setStudentError("password must be between 5 to 10 characters");
       return;
     }
@@ -52,7 +52,7 @@ const Login = () => {
       setFacultyError("all fields should be filled");
       return;
     }
-    if (facultyPassword.length >= 10 || facultyPassword.length < 5) {
+    if (facultyPassword.length >= 15 || facultyPassword.length < 5) {
       setFacultyError("password must be between 5 to 10 characters");
       return;
     }
