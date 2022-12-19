@@ -18,7 +18,7 @@ connection();
 
 // Variables
 const PORT = process.env.PORT || 8080;
-const whitelist = [process.env.FRONT_URL];
+const whitelist = process.env.FRONT_URL;
 const IS_DEVELOPMENT = process.env.IS_DEVELOPMENT === "true";
 
 // const corsOptions = {
@@ -48,7 +48,7 @@ const corsOptions = {
   origin: whitelist,
   optionsSuccessStatus: 200, // For legacy browser support
   credentials: true,
-  methods: "GET, PUT, POST, DELETE",
+  methods: "GET, POST",
   contentType: "application/json",
 };
 
@@ -70,7 +70,7 @@ const update_Image = (req, res, next) => {
 
 // middlewares
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
+// app.options("*", cors(corsOptions));
 app.use(cookieParser());
 
 morgan.token("date", function () {
