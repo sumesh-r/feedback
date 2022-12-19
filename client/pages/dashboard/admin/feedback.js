@@ -46,7 +46,6 @@ const Feedback = () => {
   }, []);
 
   const fetchSubjects = async () => {
-
     const body = {
       batch: batch,
       degree: degree,
@@ -54,28 +53,26 @@ const Feedback = () => {
       semester: semester,
       feedbackNo: feedbackNo,
     };
-    const response = await UseFetch(
-      "POST",
-      "/staff/a/feedback" ,
-      body
-    ).then(async function ({ status, data }) {
-      if (status === 401 || status === 409 || status === 404) {
-        router.push("/dashboard");
-        return;
+    const response = await UseFetch("POST", "/staff/a/feedback", body).then(
+      async function ({ status, data }) {
+        if (status === 401 || status === 409 || status === 404) {
+          router.push("/dashboard");
+          return;
+        }
+        if (data.isLive) {
+          data.isLive = "Active";
+        } else {
+          data.isLive = "InActive";
+        }
+        if (!data.subjects) {
+          data.subjects = [];
+        }
+        if (!data.electiveSubjects) {
+          data.electiveSubjects = [];
+        }
+        return data;
       }
-      if (data.isLive) {
-        data.isLive = "Active";
-      } else {
-        data.isLive = "InActive";
-      }
-      if (!data.subjects) {
-        data.subjects = [];
-      }
-      if (!data.electiveSubjects) {
-        data.electiveSubjects = [];
-      }
-      return data;
-    });
+    );
 
     if (response) {
       const subjects = response.subjects;
@@ -147,22 +144,21 @@ const Feedback = () => {
       electiveSubjects: [...electiveSubjects],
     };
 
-    const response = UseFetch(
-      "POST","/feedback/a/update",
-      feedback 
-    ).then(({ status, data }) => {
-      if (status === 401) {
-        router.push("/");
-        return "not 200 status";
-      } else if (status === 409) {
-        return { eMessage: data.eMessage, path: "updateFeedback" };
-      } else if (status === 200) {
-        return { Message: "feedback updated", path: "updateFeedback" };
-      } else if (status != 200) {
-        setError(data.eMessage);
-        return data;
+    const response = UseFetch("POST", "/feedback/a/update", feedback).then(
+      ({ status, data }) => {
+        if (status === 401) {
+          router.push("/");
+          return "not 200 status";
+        } else if (status === 409) {
+          return { eMessage: data.eMessage, path: "updateFeedback" };
+        } else if (status === 200) {
+          return { Message: "feedback updated", path: "updateFeedback" };
+        } else if (status != 200) {
+          setError(data.eMessage);
+          return data;
+        }
       }
-    });
+    );
   };
 
   const SubjectsTable = () => {
@@ -248,6 +244,7 @@ const Feedback = () => {
         py-2 px-4 rounded text-white shadow-md
         "
             onClick={() => {
+              setIsElective(false);
               handleSubjectModel();
             }}
           >

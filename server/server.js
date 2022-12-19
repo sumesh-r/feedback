@@ -10,6 +10,7 @@ const feedback_routes = require("./routes/feedback-routes");
 const auth_routes = require("./routes/auth-routes");
 const response_routes = require("./routes/response-routes");
 const staff_routes = require("./routes/staff-routes");
+const report_routes = require("./routes/report-routes");
 const exec = require("child_process").exec; // for updating the server and client
 
 // connecting to database
@@ -93,6 +94,8 @@ app.use("/api/feedback", feedback_routes);
 app.use("/api/auth", auth_routes);
 app.use("/api/response", response_routes);
 app.use("/api/staff", staff_routes);
+app.use("/api/report", report_routes);
+
 
 // route to update the server and client
 app.use("/api/update-image", update_Image);

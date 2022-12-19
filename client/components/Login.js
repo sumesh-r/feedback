@@ -11,7 +11,7 @@ const Login = () => {
     useAuth();
 
   // Faculty
-  const [userName, setUserName] = useState("abcd");
+  const [userName, setUserName] = useState("abc");
   const [facultyPassword, setFacultyPassword] = useState("hicet");
   const [facultyError, setFacultyError] = useState("");
 

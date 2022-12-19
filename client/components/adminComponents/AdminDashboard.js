@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Feedbacks from "@adminComponents/Feedbacks";
+import Reports from "@adminComponents/Reports";
 import Dashboard from "@adminComponents/Dashboard";
 import Account from "@adminComponents/Account";
 import Students from "@adminComponents/Students";
@@ -15,6 +16,7 @@ const AdminDashboard = () => {
   const Menus = [
     { title: "Dashboard", src: "Chart_fill" },
     { title: "Feedbacks", src: "Chat" },
+    { title: "Reports", src: "Chat" },
     { title: "Students", src: "User" },
     { title: "Advisors", src: "User" },
     { title: "Account", src: "User" },
@@ -26,7 +28,6 @@ const AdminDashboard = () => {
     sessionStorage.setItem("title", "Feedbacks");
   }
   const [current, setCurrent] = useState(useSessionStorage("title"));
-
 
   return (
     <div className="flex overflow-auto">
@@ -66,7 +67,9 @@ const AdminDashboard = () => {
                   router.push("/");
                 }
                 setCurrent(Menu.title);
-                sessionStorage.setItem("title", Menu.title)
+                if (Menu.title !== "Logout") {
+                  sessionStorage.setItem("title", Menu.title);
+                }
               }}
               key={index}
               className={`flex  rounded-md p-2 cursor-pointer
@@ -88,6 +91,7 @@ const AdminDashboard = () => {
       <div className={`flex w-full h-screen `}>
         {current === "Dashboard" && <Dashboard />}
         {current === "Feedbacks" && <Feedbacks />}
+        {current === "Reports" && <Reports />}
         {current === "Students" && <Students />}
         {current === "Advisors" && <Advisors />}
         {current === "Account" && <Account />}

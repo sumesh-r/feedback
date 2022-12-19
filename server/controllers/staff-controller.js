@@ -153,7 +153,10 @@ const getDashboardDetailsForAdvisor = async (req, res) => {
   let semester = feedback.semester;
 
   const notSubmittedStudents = students.map((student) => {
-    if (!student.isFeedbackSubmitted[semester][feedbackNo])
+    if (
+      student
+      // !student.isFeedbackSubmitted[semester][feedbackNo]
+      )
       return {
         name: student.name,
         regNo: student.regNo,

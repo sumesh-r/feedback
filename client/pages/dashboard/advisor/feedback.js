@@ -15,6 +15,7 @@ const Feedback = () => {
   const router = useRouter();
   let urlParams, queryString, semester, feedbackNo;
 
+  //  only one moddel for both subject and esubjects
   const handleSubjectModel = () => {
     setSubjectModel(!subjectModel);
   };
@@ -236,6 +237,7 @@ feedback
         py-2 px-4 rounded text-white shadow-md
         "
             onClick={() => {
+              
               handleSubjectModel();
             }}
           >

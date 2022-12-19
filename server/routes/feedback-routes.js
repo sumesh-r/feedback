@@ -16,8 +16,8 @@ const validateData = require("../utils/middlewares/validateData");
 // staff routes
 router.post("/staff", checkStaffAuth, addFeedback);
 router.post("/staff/delete", checkStaffAuth, deleteFeedback);
-router.post("/staff/subject/update", checkStaffAuth, updateFeedbackSubject);
-router.post("/staff/subject/delete", checkStaffAuth, deleteFeedbackSubject);
+// router.post("/staff/subject/update", checkStaffAuth, updateFeedbackSubject);
+// router.post("/staff/subject/delete", checkStaffAuth, deleteFeedbackSubject);
 router.post("/staff/update/", checkStaffAuth, updateFeedbackForAdvisor);
 router.post("/staff/subject/", checkStaffAuth, addFeedbackSubject);
 

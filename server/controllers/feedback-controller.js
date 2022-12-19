@@ -1,4 +1,5 @@
 const { Feedback } = require("../models/Feedback");
+const { Report } = require("../models/Report");
 const { Student } = require("../models/Student");
 
 const addFeedback = async (req, res) => {
@@ -86,8 +87,6 @@ const addFeedback = async (req, res) => {
     semester: req.body.semester,
   };
 
-  // db.Member.find({ country_id: 10 }).sort({ score: -1 }).limit(1);
-
   let latestFeedback = await Feedback.findOne(
     {
       ...filter,
@@ -125,6 +124,12 @@ const addFeedback = async (req, res) => {
       ...req.body,
       feedbackNo: feedbackNo,
     }).save();
+
+    let report = await Report({
+      ...req.body,
+      feedbackNo: feedbackNo,
+    }).save();
+
     students = await Student.updateMany(filter, {
       $addToSet: {
         feedbacks: {
@@ -391,7 +396,7 @@ const getFeedbacksForAdvisor = async (req, res) => {
 
   try {
     feedbacks = await Feedback.find(
-      { filter },
+      { ...filter },
       "-subjects -electiveSubjects -_id -__v -createAt -updatedAt"
     );
   } catch (error) {
@@ -492,7 +497,7 @@ const getFeedbackForStudent = async (req, res) => {
   }
 
   if (!feedback) {
-    return res.status(409).json({ message: "no feedback to submit" });
+    return res.status(200).json({ message: "no feedback to submit" });
   }
 
   let electiveSubjects = [];
@@ -529,18 +534,26 @@ const updateFeedbackForAdvisor = async (req, res) => {
   const updateSubjectsData = [...req.body.subjects];
   const updateElectiveSubjectsData = [...req.body.electiveSubjects];
 
-  let feedback;
+  let feedback, report, studentCount;
 
   try {
     feedback = await Feedback.findOne({
       ...filter,
     });
+    report = await Report.findOne({
+      ...filter,
+    });
+    studentCount = await Student.find({
+      batch: req.batch,
+      degree: req.degree,
+      section: req.section,
+    }).count();
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);
   }
 
-  if (!feedback) {
+  if (!feedback || !report) {
     return res.status(409).json("feedback does'nt exists");
   }
 
@@ -550,6 +563,66 @@ const updateFeedbackForAdvisor = async (req, res) => {
         isLive: updateData.isLive,
         subjects: updateSubjectsData,
         electiveSubjects: updateElectiveSubjectsData,
+      },
+    });
+
+    const subjectsForReport = updateSubjectsData.map((subject, idx) => {
+      return {
+        ...subject,
+        totalStrength: studentCount,
+      };
+    });
+
+    const countBy = (d, id) =>
+      d.reduce(
+        (r, { subjectCode }, i, a) => (
+          (r[subjectCode] = a.filter(
+            (x) => x.subjectCode == subjectCode
+          ).length),
+          r
+        ),
+        {}
+      );
+    const counts = countBy(updateElectiveSubjectsData, "subjectCode");
+
+    const removeDuplicate = (arr, filter) => {
+      // Declare a new array
+      let newArray = [];
+      // Declare an empty object
+      let uniqueObject = {};
+      // Loop for the array elements
+      for (let i in arr) {
+        // Extract the title
+        objTitle = arr[i][filter];
+        // Use the title as the index
+        uniqueObject[objTitle] = arr[i];
+      }
+      // Loop to push unique object into array
+      for (i in uniqueObject) {
+        newArray.push(uniqueObject[i]);
+      }
+      // Display the unique objects
+      return newArray;
+    };
+
+    const uniqueElectiveSubjects = removeDuplicate(
+      updateElectiveSubjectsData,
+      "subjectCode"
+    );
+
+    const electiveSubjectsForReport = uniqueElectiveSubjects.map(
+      (subject, idx) => {
+        delete subject["regNo"];
+        return {
+          ...subject,
+          totalStrength: counts[String(subject.subjectCode)],
+        };
+      }
+    );
+
+    report = await Report.updateOne(filter, {
+      $set: {
+        subjects: [...subjectsForReport, ...electiveSubjectsForReport],
       },
     });
 
@@ -664,7 +737,61 @@ const updateFeedbackForAdmin = async (req, res) => {
 };
 
 const submitFeedbackForStudent = async (req, res) => {
-  console.log(req.body);
+  const subjects = req.body.subjects;
+  const { batch, degree, section, semester, feedbackNo } = req.body;
+  const filter = {
+    batch: batch,
+    degree: degree,
+    section: section,
+    semester: semester,
+    feedbackNo: feedbackNo,
+  };
+
+  let report, student;
+
+  student = await Student.findOne({
+    regNo: req.regNo,
+  });
+
+    console.log(student.feedbacks);
+
+  student = await Student.updateOne({regNo: student.regNo},)
+
+  // new_value = 15;
+  // db.mycollection.aggregate([
+  //   {
+  //     $addFields: {
+  //       value: { $avg: ["$value", new_value] },
+  //     },
+  //   },
+  //   { $out: "mycollection" },
+  // ]);
+
+  // const subjectCodes = subjects.map((subject) => {
+  //   return subject.subjectCode;
+  // });
+
+  // subjects.map(async (subject) => {
+  //   report = await Report.updateOne(
+  //     { ...filter },
+  //     {
+  //       $set: {
+  //         "subjects.$.subjectCode": {
+  //           subjectKnowledge: {
+  //             $avg: [$subjectKnowledge, subject.subjectKnowledge],
+  //           },
+  //           clearExplanation: 8,
+  //           usageOfTeachingTools: 2,
+  //           extraInput: 0,
+  //           teacherStudentRelationship: 2,
+  //         },
+  //       },
+  //     },
+  //     { arrayFilters: [{ subjectCode: subject.subjectCode }] }
+  //   );
+  // });
+
+  return res.status(200).json("done");
 };
 
 module.exports = {

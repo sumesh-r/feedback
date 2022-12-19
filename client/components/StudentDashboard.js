@@ -22,7 +22,6 @@ const StudentDashboard = () => {
       status,
       data,
     }) {
-      if (status != 200) return "not 200 status";
       return data.feedback;
     });
 
@@ -48,6 +47,7 @@ const StudentDashboard = () => {
       setFeedback(response);
     }
   };
+
 
   const subjectsColumns = useMemo(
     () => [
@@ -142,7 +142,14 @@ const StudentDashboard = () => {
   const submitFeedback = async () => {
     setLoading(true);
 
-    const body = subjects;
+    const body = {
+      batch: feedback.batch,
+      degree: feedback.degree,
+      semester: feedback.semester,
+      section: feedback.section,
+      feedbackNo: feedback.feedbackNo,
+      subjects: subjects,
+    };
 
     let response = { eMessage: "no value received", path: "addfeedback" };
 
@@ -153,7 +160,8 @@ const StudentDashboard = () => {
           return data;
         }
         if (status === 200) {
-          return { Message: "feedbackSubmitted", path: "addfeedback" };
+          setSubjects([])
+          return { Message: "feedback Submitted", path: "addfeedback" };
         }
         if (status === 409) {
           return { eMessage: data.eMessage, path: "addfeedback" };
@@ -245,7 +253,7 @@ const StudentDashboard = () => {
   };
 
   return (
-    <div className="flex flex-col items-center w-full pt-8">
+    <div className="flex flex-col items-center w-full h-screen pt-8">
       {/* heading */}
       <div className="w-10/12 flex justify-between items-center">
         <h1
@@ -256,21 +264,23 @@ const StudentDashboard = () => {
           Feedback
         </h1>
         <button
-          className="text-1xl md:text-2xl py-1.5 rounded-lg px-10 mr-10 bg-green-500
-          items-center mb-5 font-semibold  text-white shadow"
+          className="bg-dark-purple bg-opacity-30 
+        py-2 px-10 font-semibold text-white shadow-md rounded-lg mb-5"
           onClick={studentLogout}
         >
           Logout
         </button>
       </div>
 
-      {/* basic details */}
-      <div className="w-full flex mb-5 justify-center">
-        <div
-          className="flex flex-col md:flex-row items-center
+      {subjects[0] ? (
+        <div>
+          {/* basic details */}
+          <div className="w-full flex mb-5 justify-center">
+            <div
+              className="flex flex-col md:flex-row items-center
          w-9/12 justify-between"
-        >
-          {/* <div className="flex items-center mb-4 md:mb-0 md:ml-2">
+            >
+              {/* <div className="flex items-center mb-4 md:mb-0 md:ml-2">
             <label htmlFor="name" className="mr-3">
               Name:
             </label>
@@ -301,107 +311,113 @@ const StudentDashboard = () => {
             />
           </div> */}
 
-          <div className="flex items-center mb-4 md:mb-0 md:ml-2">
-            <label htmlFor="Dept_&_sec" className="mr-3">
-              Class:{" "}
-            </label>
-            <input
-              className="outline-none px-2 py-1 rounded bg-white
+              <div className="flex items-center mb-4 md:mb-0 md:ml-2">
+                <label htmlFor="Dept_&_sec" className="mr-3">
+                  Class:{" "}
+                </label>
+                <input
+                  className="outline-none px-2 py-1 rounded bg-white
                cursor-not-allowed"
-              type="text"
-              name="Dept_&_sec"
-              onChange={(e) => {}}
-              id="Dept_&_sec"
-              value={`${feedback.degree} - ${feedback.section}`}
-              readOnly
-            />
+                  type="text"
+                  name="Dept_&_sec"
+                  onChange={(e) => {}}
+                  id="Dept_&_sec"
+                  value={`${feedback.degree} - ${feedback.section}`}
+                  readOnly
+                />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      {/* basic details of feedback */}
-      <div className="w-full flex justify-center">
-        <div
-          className="flex flex-col md:flex-row items-center
+          {/* basic details of feedback */}
+          <div className="w-full flex justify-center">
+            <div
+              className="flex flex-col md:flex-row items-center
          w-9/12 justify-between"
-        >
-          <div className="flex items-center mb-4 md:mb-0 md:ml-2">
-            <label htmlFor="batch" className="mr-3">
-              Batch:
-            </label>
-            <input
-              className="outline-none py-1 px-2 rounded bg-white
+            >
+              <div className="flex items-center mb-4 md:mb-0 md:ml-2">
+                <label htmlFor="batch" className="mr-3">
+                  Batch:
+                </label>
+                <input
+                  className="outline-none py-1 px-2 rounded bg-white
                 cursor-not-allowed"
-              type="text"
-              name="batch"
-              onChange={(e) => {}}
-              id="batch"
-              value={feedback.batch}
-              readOnly
-            />
-          </div>
+                  type="text"
+                  name="batch"
+                  onChange={(e) => {}}
+                  id="batch"
+                  value={feedback.batch}
+                  readOnly
+                />
+              </div>
 
-          <div className="flex items-center mb-4 md:mb-0 md:ml-2">
-            <label htmlFor="Dept_&_sec" className="mr-3">
-              Semester:{" "}
-            </label>
-            <input
-              className="outline-none px-2 py-1 rounded bg-white
+              <div className="flex items-center mb-4 md:mb-0 md:ml-2">
+                <label htmlFor="Dept_&_sec" className="mr-3">
+                  Semester:{" "}
+                </label>
+                <input
+                  className="outline-none px-2 py-1 rounded bg-white
                cursor-not-allowed"
-              type="text"
-              name="Dept_&_sec"
-              id="Dept_&_sec"
-              onChange={(e) => {}}
-              value={feedback.semester}
-              readOnly
-            />
-          </div>
+                  type="text"
+                  name="Dept_&_sec"
+                  id="Dept_&_sec"
+                  onChange={(e) => {}}
+                  value={feedback.semester}
+                  readOnly
+                />
+              </div>
 
-          <div className="flex items-center mb-4 md:mb-0 md:ml-2">
-            <label htmlFor="feedbackNo" className="mr-3">
-              feedback No:{" "}
-            </label>
-            <input
-              className="outline-none px-2 py-1 rounded bg-white
+              <div className="flex items-center mb-4 md:mb-0 md:ml-2">
+                <label htmlFor="feedbackNo" className="mr-3">
+                  feedback No:{" "}
+                </label>
+                <input
+                  className="outline-none px-2 py-1 rounded bg-white
                cursor-not-allowed"
-              type="text"
-              name="feedbackNo"
-              onChange={(e) => {}}
-              id="feedbackNo"
-              value={feedback.feedbackNo}
-              readOnly
-            />
+                  type="text"
+                  name="feedbackNo"
+                  onChange={(e) => {}}
+                  id="feedbackNo"
+                  value={feedback.feedbackNo}
+                  readOnly
+                />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      {/* error */}
-      <div className="mt-8 w-9/12">
-        {error ? (
-          <span className="flex text-red-600 justify-start">{error}</span>
-        ) : (
-          ""
-        )}
-      </div>
+          {/* error */}
+          <div className="mt-8 w-8/12 ">
+            {error ? (
+              <span className="flex text-red-600 justify-start">{error}</span>
+            ) : (
+              ""
+            )}
+          </div>
 
-      {/* table */}
-      <form onSubmit={submitData} className="w-full">
-        <div className="w-full flex justify-center">
-          <Table data={subjects} column={subjectsColumns} />
-        </div>
-        {/* submit button */}
-        <div className="flex w-10/12 justify-end">
-          <button
-            type="submit"
-            className="bg-dark-purple bg-opacity-30 px-4 py-2 rounded-lg
+          {/* table */}
+          <form onSubmit={submitData} className="w-full">
+            <div className="w-full flex justify-center">
+              <Table data={subjects} column={subjectsColumns} />
+            </div>
+            {/* submit button */}
+            <div className="flex w-10/12 justify-end">
+              <button
+                type="submit"
+                className="bg-dark-purple bg-opacity-30 px-4 py-2 rounded-lg
         text-white"
-          >
-            Submit
-          </button>
+              >
+                Submit
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
+      ) : (
+        <div className="w-full h-4/5 flex justify-center items-center ">
+          no feedback to submit
+        </div>
+      )}
 
-      {IS_DEVELOPMENT && (
+      {subjects[0] && IS_DEVELOPMENT && (
         <>
           <div className="flex mt-3 w-9/12 justify-end">
             <button
