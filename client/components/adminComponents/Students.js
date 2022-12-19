@@ -359,7 +359,6 @@ const Students = () => {
           </button>
         </div>
       </div>
-      {/* table */}
       <div className="w-full flex justify-center">
         <table
           className="divide-y mt-7 m-10 w-3/4 divide-gray-200"

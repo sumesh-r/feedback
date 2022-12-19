@@ -338,7 +338,7 @@ const getStudentsForAdmin = async (req, res) => {
   }
 
   if (!students[0]) {
-    return res.status(409).json({ message: "no students" });
+    return res.status(200).json({ message: "no students" });
   }
   res.status(200).json([...students]);
 };

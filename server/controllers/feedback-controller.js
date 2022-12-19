@@ -749,13 +749,13 @@ const submitFeedbackForStudent = async (req, res) => {
 
   let report, student;
 
-  student = await Student.findOne({
-    regNo: req.regNo,
-  });
+  // student = await Student.findOne({
+  //   regNo: req.regNo,
+  // });
 
-    console.log(student.feedbacks);
+  // console.log(student.feedbacks);
 
-  student = await Student.updateOne({regNo: student.regNo},)
+  // student = await Student.updateOne({regNo: student.regNo},)
 
   // new_value = 15;
   // db.mycollection.aggregate([
