@@ -3,16 +3,16 @@ import { useAuth } from "@context/AuthContext";
 
 const Login = () => {
   // Student
-  const [regNo, setRegNo] = useState(222);
-  const [dob, setDob] = useState("07/03/2003");
-  const [studentPassword, setStudentPassword] = useState("hicet");
+  const [regNo, setRegNo] = useState();
+  const [dob, setDob] = useState("");
+  const [studentPassword, setStudentPassword] = useState("");
   const [studentError, setStudentError] = useState("");
   const { studentLogin, facultyLogin, facultyErrorMsg, studentErrorMsg } =
     useAuth();
 
   // Faculty
-  const [userName, setUserName] = useState("abc");
-  const [facultyPassword, setFacultyPassword] = useState("hicet");
+  const [userName, setUserName] = useState("");
+  const [facultyPassword, setFacultyPassword] = useState("");
   const [facultyError, setFacultyError] = useState("");
 
   useEffect(() => {
