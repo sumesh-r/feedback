@@ -21,8 +21,8 @@ const SubjectModel = ({
   const [data, setData] = useState(
     isElective
       ? {
-          subjectCode: subjectCode ? subjectCode : "",
           regNo: regNo ? regNo : "",
+          subjectCode: subjectCode ? subjectCode : "",
           subjectName: subjectName ? subjectName : "",
           faculty: faculty ? faculty : "",
           facultyPosition: facultyPosition ? facultyPosition : "",

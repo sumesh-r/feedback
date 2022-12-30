@@ -10,10 +10,9 @@ const {
   updateAdvisorForAdmin,
   addAdvisorForAdmin,
 } = require("../controllers/staff-controller.js");
-const userValidationSchema = require("../utils/validation/staff-validation");
-const validateData = require("../utils/middlewares/validateData");
-const { checkAdminAuth } = require("../utils/middlewares/checkAuth");
-const { checkStaffAuth } = require("../utils/middlewares/checkAuth");
+const userValidationSchema = require("#validation/staff-validation.js");
+const validateData = require("#middlewares/validateData.js");
+const { checkAdminAuth, checkStaffAuth } = require("#middlewares/checkAuth.js");
 const {
   getFeedbacksForAdvisor,
   getFeedbackForAdvisor,

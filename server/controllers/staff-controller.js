@@ -123,7 +123,7 @@ const getDashboardDetailsForAdvisor = async (req, res) => {
     section: req.section,
   };
 
-  let students;
+  let notSubmittedStudents;
   let feedback;
 
   try {
@@ -141,33 +141,30 @@ const getDashboardDetailsForAdvisor = async (req, res) => {
   }
 
   try {
-    students = await Student.find(
-      filter,
-      "isFeedbackSubmitted name regNo -_id"
-    );
+    notSubmittedStudents = await Student.find(
+      {
+        ...filter,
+        "feedbacks.semester": feedback.semester,
+        "feedbacks.feedbackNo": feedback.feedbackNo,
+        "feedbacks.isSubmitted": false,
+      },
+      {
+        regNo: 1,
+        name: 1,
+        _id: 0,
+      }
+    ).sort({regNo: 1});
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);
   }
-  let feedbackNo = feedback.feedbackNo;
-  let semester = feedback.semester;
 
-  const notSubmittedStudents = students.map((student) => {
-    if (
-      student
-      // !student.isFeedbackSubmitted[semester][feedbackNo]
-      )
-      return {
-        name: student.name,
-        regNo: student.regNo,
-      };
-  });
-
-  if (!students[0]) {
-    return res.status(409).json({ message: "no students" });
+  if (!notSubmittedStudents[0]) {
+    return res.status(200).json({ message: "no students" });
   }
-  res.status(200).json({ notSubmittedStudents, feedback });
+  return res.status(200).json({ notSubmittedStudents, feedback });
 };
+
 
 const getAdvisorsForAdmin = async (req, res) => {
   let staff;
@@ -261,7 +258,7 @@ const updateAdvisorForAdmin = async (req, res) => {
   }
 
   try {
-    staff = await Staff.updateOne({userName: userName}, {...req.body})
+    staff = await Staff.updateOne({ userName: userName }, { ...req.body });
     return res.status(200).json("Staff Added");
   } catch (error) {
     console.log(error);

@@ -1,7 +1,7 @@
-const { Responses } = require("../../models/Response");
+const { Responses } = require("#models/Response.js");
 const jwt = require("jsonwebtoken");
-const { Staff } = require("../../models/Staff");
-const { Student } = require("../../models/Student");
+const { Staff } = require("#models/Staff.js");
+const { Student } = require("#models/Student.js");
 require("dotenv").config();
 
 const JWT_SECRET_KEY = process.env.JWT;

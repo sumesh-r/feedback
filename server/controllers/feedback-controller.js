@@ -527,6 +527,13 @@ const updateFeedbackForAdvisor = async (req, res) => {
     feedbackNo: req.body.feedbackNo,
   };
 
+  const isLiveFilter = {
+    batch: req.batch,
+    degree: req.degree,
+    section: req.section,
+    isLive: true,
+  };
+
   const updateData = {
     isLive: req.body.isLive,
   };
@@ -534,9 +541,12 @@ const updateFeedbackForAdvisor = async (req, res) => {
   const updateSubjectsData = [...req.body.subjects];
   const updateElectiveSubjectsData = [...req.body.electiveSubjects];
 
-  let feedback, report, studentCount;
+  let isLiveFeedback, feedback, report, studentCount;
 
   try {
+    isLiveFeedback = await Feedback.findOne({
+      ...isLiveFilter,
+    });
     feedback = await Feedback.findOne({
       ...filter,
     });
@@ -554,7 +564,11 @@ const updateFeedbackForAdvisor = async (req, res) => {
   }
 
   if (!feedback || !report) {
-    return res.status(409).json("feedback does'nt exists");
+    return res.status(409).json("feedback doesn't exists");
+  }
+
+  if (updateData.isLive === isLiveFeedback.isLive) {
+    return res.status(200).json("another feedback is active right now");
   }
 
   try {
@@ -746,6 +760,22 @@ const submitFeedbackForStudent = async (req, res) => {
     semester: semester,
     feedbackNo: feedbackNo,
   };
+
+  const a = [
+    {
+      subjectCode: "19CS5201",
+      subjectName: "Theory of Computing",
+      faculty: "Ms.J.Ananthi",
+      facultyPosition: "Associate Professor",
+      facultyDepartment: "CSE",
+      subjectKnowledge: 6,
+      clearExplanation: 2,
+      usageOfTeachingTools: 2,
+      extraInput: 0,
+      teacherStudentRelationship: 8,
+    },
+  ];
+
 
   let report, student;
 

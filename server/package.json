@@ -10,6 +10,18 @@
   "keywords": [],
   "author": "Sumesh R",
   "license": "ISC",
+  "imports": {
+    "#controllers/*.js": "./controllers/*.js",
+    "#models/*.js": "./models/*.js",
+    "#routes/*.js": "./routes/*.js",
+    "#utils/*.js": "./utils/*.js",
+    "#feedbackControllers/*.js": "./controllers/feedbackControllers/*.js",
+    "#reportControllers/*.js": "./controllers/reportControllers/*.js",
+    "#staffControllers/*.js": "./controllers/staffControllers/*.js",
+    "#studentControllers/*.js": "./controllers/studentControllers/*.js",
+    "#middlewares/*.js": "./utils/middlewares/*.js",
+    "#validation/*.js": "./utils/validation/*.js"
+  },
   "dependencies": {
     "ajv": "^8.11.0",
     "ajv-formats": "^2.1.1",
@@ -25,6 +37,5 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
-
   }
 }

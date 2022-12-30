@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { checkAdminAuth } = require("../utils/middlewares/checkAuth");
+const { checkAdminAuth } = require("#middlewares/checkAuth.js");
 const {
   getFeedbacksForAdmin,
 } = require("../controllers/feedback-controller.js");

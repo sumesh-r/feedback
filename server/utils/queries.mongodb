@@ -1,7 +1,53 @@
 
-
 // switch to feedback database
 use("feedback")
 
 // show collections
 db.getCollectionNames()
+
+// get a particular class
+db.students.find({batch: 2020, degree: "BE-CSE", section:"C"},{password:0, _id:0, "feedbacks._id": 0})
+
+db.students.find(
+    {batch: 2020, degree: "BE-CSE", section:"C"}
+    ,{password: 0, dob: 0, batch: 0, degree: 0, section: 0, _id:0, "feedbacks._id":0  }
+)
+
+// students who have not submitted a feedback
+db.students.find(
+    {
+        batch: 2020,
+        degree: "BE-CSE",
+        section:"C",
+        'feedbacks.feedbackNo': "I",
+        'feedbacks.semester': "V",
+        "feedbacks.isSubmitted": false
+    },
+    {
+        regNo: 1,
+        name: 1,
+        _id:0,  
+    }
+)
+
+// update the students profile after the student
+// has submitted a feedback
+// db.students.updateOne(
+//     {
+//         regNo: 20104169,
+//         'feedbacks.semester': "V",
+//         'feedbacks.feedbackNo': "I",
+//     },
+//     {
+//         $set: {
+//         "feedbacks.$.isSubmitted": true
+//         }
+//     }
+// )
+
+
+
+db.students.findOne({
+        regNo: 20104169,
+    })
+
