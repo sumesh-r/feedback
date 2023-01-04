@@ -7,7 +7,7 @@ FROM node:lts-alpine3.17
 WORKDIR /app
 
 #Change TimeZone
-RUN apk add tzdata && RUN cp /usr/share/zoneinfo/Asia/Kolkata /etc/localtime && RUN echo "Asia/Kolkata" > /etc/timezone && RUN apk del tzdata
+RUN apk add tzdata && cp /usr/share/zoneinfo/Asia/Kolkata /etc/localtime && echo "Asia/Kolkata" > /etc/timezone && apk del tzdata
 
 #Expose ports
 EXPOSE 3000
