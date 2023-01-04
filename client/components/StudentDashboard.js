@@ -18,7 +18,7 @@ const StudentDashboard = () => {
   });
 
   const fetchSubjects = async () => {
-    const response = await UseFetch("GET", "/student/feedback").then(function ({
+    const response = await UseFetch("GET", "/student/feedback/get").then(function ({
       status,
       data,
     }) {

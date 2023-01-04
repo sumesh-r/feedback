@@ -53,7 +53,7 @@ const Feedback = () => {
       semester: semester,
       feedbackNo: feedbackNo,
     };
-    const response = await UseFetch("POST", "/staff/a/feedback", body).then(
+    const response = await UseFetch("POST", "/a/feedback/get", body).then(
       async function ({ status, data }) {
         if (status === 401 || status === 409 || status === 404) {
           router.push("/dashboard");
@@ -144,7 +144,7 @@ const Feedback = () => {
       electiveSubjects: [...electiveSubjects],
     };
 
-    const response = UseFetch("POST", "/feedback/a/update", feedback).then(
+    const response = UseFetch("POST", "/a/feedback/update", feedback).then(
       ({ status, data }) => {
         if (status === 401) {
           router.push("/");

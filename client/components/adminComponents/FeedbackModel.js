@@ -27,7 +27,7 @@ const FeedbackModel = ({ editData, isEdit, callback, fetchFeedbacks }) => {
       section: data.section,
       semester: data.semester,
     };
-    const response = await UseFetch("POST", "/feedback/a", body).then(
+    const response = await UseFetch("POST", "/a/feedback/add", body).then(
       async function ({ status, data }) {
         if (status === 401) {
           router.push("/");
@@ -35,7 +35,7 @@ const FeedbackModel = ({ editData, isEdit, callback, fetchFeedbacks }) => {
         } else if (status === 409) {
           return { eMessage: data.eMessage, path: "addfeedback" };
         } else if (status === 200) {
-          callback()
+          callback();
           return { Message: "feedback added", path: "addfeedback" };
         } else if (status != 200) {
           setError(data.eMessage);
@@ -51,11 +51,15 @@ const FeedbackModel = ({ editData, isEdit, callback, fetchFeedbacks }) => {
     e.preventDefault();
     setError("");
     if (
-      data.batch === "Select" || data.batch === "" ||
-      data.degree === "Select" || data.degree === "" ||
-      data.semester === "Select" || data.semester === "" ||
-      data.section === "Select" || data.section === "" 
-      // || data.feedbackNo === "" 
+      data.batch === "Select" ||
+      data.batch === "" ||
+      data.degree === "Select" ||
+      data.degree === "" ||
+      data.semester === "Select" ||
+      data.semester === "" ||
+      data.section === "Select" ||
+      data.section === ""
+      // || data.feedbackNo === ""
     ) {
       setError("all fields should be filled");
       return;

@@ -42,7 +42,7 @@ const StudentModel = ({
 
     let response = { eMessage: "no value received", path: "addstudent" };
 
-    response = await UseFetch("POST", "/staff/student", body).then(
+    response = await UseFetch("POST", "/advisor/student/add", body).then(
       async function ({ status, data }) {
         if (status != 200) {
           setError(data.eMessage);
@@ -73,7 +73,7 @@ const StudentModel = ({
 
     let response = { eMessage: "no value received", path: "updatestudent" };
 
-    response = await UseFetch("POST", "/staff/student/update", body).then(
+    response = await UseFetch("POST", "/advisor/student/update", body).then(
       async function ({ status, data }) {
         if (status != 200) {
           setError(data.eMessage);

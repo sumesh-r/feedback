@@ -8,7 +8,7 @@ export const Dashboard = () => {
   const [liveFeedback, setLiveFeedback] = useState({});
 
   const fetchStudents = async () => {
-    const response = await UseFetch("GET", "/staff/dashboard").then(function ({
+    const response = await UseFetch("GET", "/advisor/feedback/dashboard/get").then(function ({
       status,
       data,
     }) {

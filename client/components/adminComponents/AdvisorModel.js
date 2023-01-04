@@ -39,7 +39,7 @@ const AdvisorModel = ({
 
     let response = { eMessage: "no value received", path: "addstudent" };
 
-    response = await UseFetch("POST", "/staff/a/advisor", body).then(
+    response = await UseFetch("POST", "/a/advisor/add", body).then(
       async function ({ status, data }) {
         if (status != 200) {
           setError(data.eMessage);
@@ -69,9 +69,9 @@ const AdvisorModel = ({
       section: data.section,
     };
 
-    let response = { eMessage: "no value received", path: "updatestudent" };
+    let response = { eMessage: "no value received", path: "update advisor" };
 
-    response = await UseFetch("POST", "/staff/a/advisor/update", body).then(
+    response = await UseFetch("POST", "/a/advisor/update", body).then(
       async function ({ status, data }) {
         if (status != 200) {
           setError(data.eMessage);
@@ -79,10 +79,10 @@ const AdvisorModel = ({
         }
         if (status === 200) {
           callback();
-          return { Message: "student updated", path: "updatestudent" };
+          return { Message: "advisor updated", path: "update advisor" };
         }
         if (status === 409) {
-          return { eMessage: data.eMessage, path: "updatestudent" };
+          return { eMessage: data.eMessage, path: "update advisor" };
         }
       }
     );

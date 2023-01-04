@@ -9,7 +9,7 @@ import StudentModel from "@facultyComponents/StudentModel";
 const Students = () => {
   const [students, setStudents] = useState([]);
   const [openStudentModel, setOpenStudentModel] = useState(false);
-  const [editStudentModel, setEditStudentModel] = useState(false)
+  const [editStudentModel, setEditStudentModel] = useState(false);
   const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState({});
   const [editData, setEditData] = useState({});
@@ -21,39 +21,38 @@ const Students = () => {
   };
 
   const handleEditStudentModel = () => {
-    setEditStudentModel(!editStudentModel)
-  }
+    setEditStudentModel(!editStudentModel);
+  };
 
   const handleDeleteStudent = async (regNo) => {
-    const body = {regNo: regNo}
-    const response = await UseFetch("POST", "/staff/student/delete", body).then(function ({
-      status,
-      data,
-    }) {
+    const body = { regNo: regNo };
+    const response = await UseFetch(
+      "POST",
+      "/advisor/student/delete",
+      body
+    ).then(function ({ status, data }) {
       if (status === 401) {
         router.push("/");
         return "not 200 status";
       }
-      if(status === 200){
-        fetchStudents()
+      if (status === 200) {
+        fetchStudents();
       }
       return data;
     });
   };
-  
 
   // Table
   const fetchStudents = async () => {
-    const response = await UseFetch("GET", "/staff/students").then(function ({
-      status,
-      data,
-    }) {
-      if (status === 401) {
-        router.push("/");
-        return "not 200 status";
+    const response = await UseFetch("GET", "/advisor/students/get").then(
+      function ({ status, data }) {
+        if (status === 401) {
+          router.push("/");
+          return "not 200 status";
+        }
+        return data;
       }
-      return data;
-    });
+    );
 
     if (response) {
       const students = response;
@@ -96,7 +95,7 @@ const Students = () => {
                 name: row.values.name,
                 dob: row.values.dob,
               });
-              handleEditStudentModel()
+              handleEditStudentModel();
             }}
             className="text-dark-purple w-full text-center cursor-pointer"
           />

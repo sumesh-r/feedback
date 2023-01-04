@@ -1,5 +1,9 @@
 const mongoose = require("mongoose");
 
+// there are two types of staff
+      // -advisor
+      // -admin
+
 const staffSchema = mongoose.Schema(
   {
     userName: { type: String, unique: true, required: true, trim: true },

@@ -1,29 +1,11 @@
-const express = require("express");
-const router = express.Router();
-const {
-  addStudents,
-  // getStudent,
-  getStudents,
-  updateStudents,
-  deleteStudents,
-} = require("../controllers/student-controller");
-const studentValidationSchema = require("../utils/validation/student-validation");
-const { checkStudentAuth } = require("../utils/middlewares/checkAuth");
-const validateData = require("../utils/middlewares/validateData");
+// imports
+const router = require("express").Router();
+require("dotenv").config();
 const {
   getFeedbackForStudent,
-  submitFeedbackForStudent,
-} = require("../controllers/feedback-controller");
+} = require("#feedbackControllers/rFeedbackControllers.js");
 
-const { getStudent } = require("#feedbackControllers/wFeedback.js");
-
-// set routes
-router.post("/", validateData(studentValidationSchema), addStudents);
-router.post("/g", getStudents);
-router.get("/", getStudent);
-// router.put("/", updateStudents); // * not working
-// router.delete("/", deleteStudents);
-router.get("/feedback", checkStudentAuth, getFeedbackForStudent);
-router.post("/feedback", checkStudentAuth, submitFeedbackForStudent);
+//  route - /api/student...
+router.get("/feedback/get", getFeedbackForStudent);
 
 module.exports = router;

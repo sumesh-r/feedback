@@ -1,6 +1,6 @@
 {
   "name": "feedback-server",
-  "version": "1.0.0",
+  "version": "2.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -17,7 +17,7 @@
     "#utils/*.js": "./utils/*.js",
     "#feedbackControllers/*.js": "./controllers/feedbackControllers/*.js",
     "#reportControllers/*.js": "./controllers/reportControllers/*.js",
-    "#staffControllers/*.js": "./controllers/staffControllers/*.js",
+    "#advisorControllers/*.js": "./controllers/advisorControllers/*.js",
     "#studentControllers/*.js": "./controllers/studentControllers/*.js",
     "#middlewares/*.js": "./utils/middlewares/*.js",
     "#validation/*.js": "./utils/validation/*.js"

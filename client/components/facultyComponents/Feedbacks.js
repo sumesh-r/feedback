@@ -16,23 +16,22 @@ const Feedbacks = () => {
 
   const fetchFeedbacks = async () => {
     setLoading(true);
-    const response = await UseFetch("GET", "/staff/feedbacks").then(function ({
-      status,
-      data,
-    }) {
-      if (status === 401) {
-        router.push("/");
-        return "not 200 status";
-      }
-      data.feedbacks.map((feedback) => {
-        if (feedback.isLive) {
-          feedback.isLive = "Active";
-        } else {
-          feedback.isLive = "InActive";
+    const response = await UseFetch("GET", "/advisor/feedbacks/get").then(
+      function ({ status, data }) {
+        if (status === 401) {
+          router.push("/");
+          return "not 200 status";
         }
-      });
-      return data.feedbacks;
-    });
+        data.map((feedback) => {
+          if (feedback.isLive) {
+            feedback.isLive = "Active";
+          } else {
+            feedback.isLive = "InActive";
+          }
+        });
+        return data;
+      }
+    );
 
     if (response) {
       const feedbacks = response;
@@ -136,7 +135,7 @@ const Feedbacks = () => {
       semester: data.semester,
       feedbackNo: data.feedbackNo,
     };
-    const response = await UseFetch("POST", "/feedback/staff/delete", body);
+    const response = await UseFetch("POST", "/advisor/feedback/delete", body);
     fetchFeedbacks();
   };
 
@@ -158,22 +157,24 @@ const Feedbacks = () => {
         section: details.section,
         semester: data.semester,
       };
-      const response = await UseFetch("POST", "/feedback/staff", body).then(
-        async function ({ status, data }) {
-          if (status === 401) {
-            router.push("/");
-            return "not 200 status";
-          } else if (status === 409) {
-            return { eMessage: data.eMessage, path: "addfeedback" };
-          } else if (status === 200) {
-            setOpenAddFeedbackModal(false);
-            return { Message: "feedback added", path: "addfeedback" };
-          } else if (status != 200) {
-            setError(data.eMessage);
-            return data;
-          }
+      const response = await UseFetch(
+        "POST",
+        "/advisor/feedback/add",
+        body
+      ).then(async function ({ status, data }) {
+        if (status === 401) {
+          router.push("/");
+          return "not 200 status";
+        } else if (status === 409) {
+          return { eMessage: data.eMessage, path: "addfeedback" };
+        } else if (status === 200) {
+          setOpenAddFeedbackModal(false);
+          return { Message: "feedback added", path: "addfeedback" };
+        } else if (status != 200) {
+          setError(data.eMessage);
+          return data;
         }
-      );
+      });
       setLoading(false);
       return response;
     };

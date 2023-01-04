@@ -18,17 +18,17 @@ const Reports = () => {
   };
 
   const fetchFeedbacks = async () => {
-    const response = await UseFetch("GET", "/staff/a/feedbacks").then(
+    const response = await UseFetch("GET", "/a/feedbacks/get").then(
       function ({ status, data }) {
         if (status === 401) return "not 200 status";
-        data.feedbacks.map((feedback) => {
+        data.map((feedback) => {
           if (feedback.isLive) {
             feedback.isLive = "Active";
           } else {
             feedback.isLive = "InActive";
           }
         });
-        return data.feedbacks;
+        return data;
       }
     );
 
@@ -115,7 +115,7 @@ const Reports = () => {
       semester: data.semester,
       feedbackNo: data.feedbackNo,
     };
-    const response = await UseFetch("POST", "/staff/a/feedback/delete", body);
+    const response = await UseFetch("POST", "/a/feedback/delete", body);
     fetchFeedbacks();
   };
 

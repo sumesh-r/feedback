@@ -48,7 +48,7 @@ const Feedback = () => {
       semester: semester,
       feedbackNo: feedbackNo,
     };
-    const response = await UseFetch("POST", "/staff/feedback", body).then(
+    const response = await UseFetch("POST", "/advisor/feedback/get", body).then(
       async function ({ status, data }) {
         if (status === 401 || status === 409 || status === 404) {
           router.push("/dashboard");
@@ -137,8 +137,8 @@ const Feedback = () => {
     };
     const response = UseFetch(
       "POST",
-"/feedback/staff/update",
-feedback
+      "/advisor/feedback/update",
+      feedback
     ).then(({ status, data }) => {
       if (status === 401) {
         router.push("/");
@@ -237,7 +237,6 @@ feedback
         py-2 px-4 rounded text-white shadow-md
         "
             onClick={() => {
-              
               handleSubjectModel();
             }}
           >

@@ -11,6 +11,7 @@ let secureAndSameSite = {};
 
 if (!IS_DEVELOPMENT) {
   secureAndSameSite = {
+    httpOnly: true, //accessible only by web server
     secure: true, //https
     sameSite: "None", //cross-site cookie
   };
@@ -58,7 +59,6 @@ const studentLogin = async (req, res) => {
 
   // Create secure cookie with refresh token
   res.cookie("token", accessToken, {
-    httpOnly: true, //accessible only by web server
     ...secureAndSameSite,
     maxAge: 24 * 60 * 60 * 1000, //cookie expiry: set to match rT
   });
@@ -117,7 +117,6 @@ const staffLogin = async (req, res) => {
 
   // Create secure cookie with refresh token
   res.cookie("token", accessToken, {
-    httpOnly: true, //accessible only by web server
     ...secureAndSameSite,
     maxAge: 24 * 60 * 60 * 1000, //cookie expiry: set to match rT
   });

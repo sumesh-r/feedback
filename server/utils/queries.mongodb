@@ -45,9 +45,54 @@ db.students.find(
 //     }
 // )
 
+// update the name of students to uppercase
+db.students.aggregate(
+   [
+     {
+       $project:
+         {
+           regNo: 1,
+           name: { $toUpper: "$name" },
+           dob: 1,
+           batch: 1,
+           degree: 1,
+           section: 1,
+           password: 1,
+           feedbacks : 1
+         }
+     },
+    //  {
+    //     $out: {
+    //         db: 'feedback',
+    //         coll: 'students',
+    //     }
+    //  }
+   ]
+)
 
-
-db.students.findOne({
-        regNo: 20104169,
+db.students.find({},{
+  regNo: 1,
+  name: 1,
+  dob: 1,
+  batch: 1,
+  degree: 1,
+  section: 1,
+  password: 1,
+  feedbacks : 1,
+  _id:0
+}) .forEach(
+    function(n) {
+   db.students.updateOne(
+    { regNo: n.regNo },
+    { $set: {
+        regNo: n.regNo,
+        name: n.name,
+        dob: n.dob,
+        batch: n.batch,
+        degree: n.degree,
+        section: n.section,
+        password: n.password,
+        feedbacks : n.feedbacks,
+      }}
+   )
     })
-

@@ -30,7 +30,7 @@ const Students = () => {
       section: section,
     };
 
-    const response = await UseFetch("POST", "/staff/a/students", body).then(
+    const response = await UseFetch("POST", "/a/students/get", body).then(
       function ({ status, data }) {
         if (status === 401) return "not 200 status";
         return data;
@@ -57,7 +57,7 @@ const Students = () => {
     const body = { regNo: regNo };
     const response = await UseFetch(
       "POST",
-      "/staff/a/student/delete",
+      "/a/student/delete",
       body
     ).then(function ({ status, data }) {
       if (status === 401) {

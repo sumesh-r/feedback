@@ -23,7 +23,7 @@ const Advisors = () => {
     const body = { userName: userName };
     const response = await UseFetch(
       "POST",
-      "/staff/a/advisor/delete",
+      "/a/advisor/delete",
       body
     ).then(function ({ status, data }) {
       if (status === 401) {
@@ -38,7 +38,7 @@ const Advisors = () => {
   }
 
   const fetchAdvisors = async () => {
-    const response = await UseFetch("GET", "/staff/a/advisors").then(function ({
+    const response = await UseFetch("GET", "/a/advisors/get").then(function ({
       status,
       data,
     }) {
