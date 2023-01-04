@@ -1,15 +1,33 @@
-name: Dockerize Image Server
+name: Feedback-CI-CD
 
 on:
   push:
     branches: [ "main" ]
 
-  workflow_dispatch:
-
 jobs:
 
-  build-server:
+  checkout-diff:
+    runs-on: ubuntu-latest
+    outputs:
+      server: ${{ steps.filter.outputs.server }}
+      client: ${{ steps.filter.outputs.client }}
+    steps:
+    - name: Checkout the code
+      uses: actions/checkout@v3
+    - name: Check diff
+      uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          server:
+            - 'server/**'
+          client:
+            - 'client/**'
+  
 
+  build-server:
+    needs: checkout-diff
+    if: ${{ needs.checkout-diff.outputs.server == 'true' }}	
     runs-on: ubuntu-latest
 
     steps:
@@ -32,7 +50,8 @@ jobs:
         cache-to: type=gha,mode=max
 
   build-client:
-
+    needs: checkout-diff
+    if: ${{ needs.checkout-diff.outputs.client == 'true' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -53,3 +72,25 @@ jobs:
         push: true
         cache-from: type=gha
         cache-to: type=gha,mode=max
+
+  tigger-webhook:
+    if: ${{ always() }}
+    needs: [build-server, build-client, checkout-diff]
+    runs-on: ubuntu-latest
+
+    steps: 
+    - name: Trigger Webhook
+      env : 
+        SERVER_STATUS: ${{ needs.checkout-diff.outputs.server }}
+        CLIENT_STATUS: ${{ needs.checkout-diff.outputs.client }}
+        USER: ${{ secrets.USER }}
+        PASSWORD: ${{ secrets.PASSWORD }}
+				URL: ${{ secrets.URL }}
+      run : |
+        curl -X POST $URL/api/auth/user/login \
+        -H 'Content-Type: application/json' \
+        -d '{"userName":"'"$USER"'","password":"'"$PASSWORD"'"}'
+        COMMIT_ID=$(echo -n "$GITHUB_SHA" | cut -c-7)
+        curl -X POST $URL/update-image \
+        -H 'Content-Type: application/json' \
+        -d '{"server":"'"$SERVER_STATUS"'","client":"'"$CLIENT_STATUS"'","commit_id":"'"$COMMIT_ID"'"}'
