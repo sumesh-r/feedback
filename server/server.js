@@ -80,7 +80,8 @@ app.use("/user/login", staffLogin);
 // method to block requests from unknown origins like postman
 app.use((req, res, next) => {
   // only allow from unknown origin if development mode is true
-  const isOrigin = req.headers.Origin || req.headers.origin;
+  let isOrigin = false;
+  if (req.headers.Origin || req.headers.origin) isOrigin = true;
   if (!isOrigin && !IS_DEVELOPMENT)
     return res.status(400).json({ message: "Bad request" });
   next();
