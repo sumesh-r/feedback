@@ -71,8 +71,8 @@ const update_Image = (req, res) => {
 // method to block requests from unknown origins like postman
 app.use((req, res, next) => {
   // only allow from unknown origin if development mode is true
-  if (!req.headers.origin && !IS_DEVELOPMENT)
-    return res.status(400).json({ message: "Bad request" });
+  // if (!req.headers.origin && !IS_DEVELOPMENT)
+  //   return res.status(400).json({ message: "Bad request" });
   next();
 });
 app.use(cors(corsOptions));
@@ -92,7 +92,7 @@ app.use("/api/advisor", checkStaffAuth, advisorRoutes);
 app.use("/api/a", checkAdminAuth, adminRoutes);
 
 // route to update the server and client
-app.use("/api/update-image", checkAdminAuth, update_Image);
+app.use("/api/update-image", update_Image); // ! no login
 
 // listening to port
 try {
@@ -105,5 +105,5 @@ try {
 
 // backup cmd
 // mongodump --uri='mongodb://username:password@localhost:27017/feedback' --gzip --archive=/data/backup/backup.gz
-// restore cmd 
+// restore cmd
 // mongorestore mongodb://username:password@0.0.0.0:27017/feedback --gzip --archive=./temp.gz --authenticationDatabase=admin
