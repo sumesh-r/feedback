@@ -97,7 +97,7 @@ app.use("/api/update-image", checkAdminAuth, update_Image);
 // listening to port
 try {
   app.listen(PORT, () => {
-    console.log(`listening on port ${PORT}   Date: ${newDate()}`);
+    console.log(`listening on port ${PORT}  Date: ${newDate()}`);
   });
 } catch (error) {
   console.log(error);
