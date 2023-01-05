@@ -5,7 +5,8 @@ const app = express();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const morgan = require("morgan");
-const cp = require("child_process"); // for updating the server and client
+// for updating the server and client
+const cp = require("child_process");
 // for connecting database
 const connection = require("./db");
 // for checking authentication
