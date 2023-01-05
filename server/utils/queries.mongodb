@@ -70,29 +70,37 @@ db.students.aggregate(
    ]
 )
 
-db.students.find({},{
-  regNo: 1,
-  name: 1,
-  dob: 1,
-  batch: 1,
-  degree: 1,
-  section: 1,
-  password: 1,
-  feedbacks : 1,
-  _id:0
-}) .forEach(
-    function(n) {
-   db.students.updateOne(
-    { regNo: n.regNo },
-    { $set: {
-        regNo: n.regNo,
-        name: n.name,
-        dob: n.dob,
-        batch: n.batch,
-        degree: n.degree,
-        section: n.section,
-        password: n.password,
-        feedbacks : n.feedbacks,
-      }}
-   )
-    })
+const pr = db.freport.findOne({
+       "batch": 2020,
+  "degree": "BE-CSE",
+  "semester": "V",
+  "section": "C",
+  "feedbackNo": "I",
+  })
+
+db.freport.updateOne({ 
+   "batch": 2020,
+  "degree": "BE-CSE",
+  "semester": "V",
+  "section": "C",
+  "feedbackNo": "I",
+  "subjects.subjectCode": "19CS5201"
+  },
+  {
+    $set: {
+        "subjects.$.subjectKnowledge": ,
+        "subjects.$.clearExplanation": 2,
+        "subjects.$.usageOfTeachingTools": 2,
+        "subjects.$.extraInput": 2,
+        "subjects.$.teacherStudentRelationship": 2,
+    }
+  }
+  )
+
+  db.freport.findOne({
+       "batch": 2020,
+  "degree": "BE-CSE",
+  "semester": "V",
+  "section": "C",
+  "feedbackNo": "I",
+  })

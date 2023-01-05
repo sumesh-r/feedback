@@ -135,16 +135,34 @@ const getFeedbackForStudent = async (req, res) => {
   /**
    BODY = {}
    */
-  const feedbackFilter = {
+  let feedbackFilter, feedback, studentFilter, student;
+  feedbackFilter = {
     batch: req.batch,
     degree: req.degree,
     section: req.section,
     isLive: true,
   };
 
-  req.feedbackFilter = feedbackFilter;
+  feedback = await tryCatch(
+    Feedback.findOne(feedbackFilter, "-_id -__v -updatedAt -createdAt")
+  );
+  if (feedback?.notOkay) return res.status.json(feedback?.error);
 
-  await getFeedback(req, res);
+  if (!feedback) {
+    return res.status(409).json({ message: "feedback doesn't exists" });
+  }
+
+  studentFilter = {
+    regNo: req.regNo,
+    "feedbacks.semester": feedback.semester,
+    "feedbacks.feedbackNo": feedback.feedbackNo,
+  };
+
+  student = await tryCatch(Student.findOne(studentFilter, {feedbacks: 1, _id:0}))
+  if(student.feedbacks[0].isSubmitted)
+    return res.status(200).json({message: "no feedback to submit"})
+
+  return res.status(200).json(feedback);
 };
 
 const getDashboardDetailsForAdvisor = async (req, res) => {

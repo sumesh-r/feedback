@@ -15,6 +15,7 @@ const {
   checkStaffAuth,
   checkStudentAuth,
 } = require("#middlewares/checkAuth.js");
+const { staffLogin } = require("#controllers/authController.js");
 // for routes
 const studentRoutes = require("#routes/student-routes.js");
 const advisorRoutes = require("#routes/advisor-routes.js");
@@ -51,29 +52,33 @@ const update_Image = (req, res) => {
     console.log(
       `updating server and client with commit id: ${commit_id}  Date: ${newDate()}`
     );
-    cp.exec("updateScript server client");
+    cp.exec('echo "updateScript server client" >> mypipe');
   } else if (isServer) {
     console.log(
       `updating server with commit id: ${commit_id}  Date: ${newDate()}`
     );
-    cp.exec("updateScript server");
+    cp.exec('echo "updateScript server" >> mypipe');
   } else if (isClient) {
     console.log(
       `updating client with commit id:${commit_id}  Date: ${newDate()}`
     );
-    cp.exec("updateScript client");
+    cp.exec('echo "updateScript client" >> mypipe');
   } else {
     return res.status(400).json({ eMessage: "bad request" });
   }
   return res.status(200).json({ server: isServer, client: isClient });
 };
 
+// route to update the server and client
+app.use("/api/update-image", update_Image);
+app.use("/user/login", staffLogin);
+
 // middlewares
 // method to block requests from unknown origins like postman
 app.use((req, res, next) => {
   // only allow from unknown origin if development mode is true
-  // if (!req.headers.origin && !IS_DEVELOPMENT)
-  //   return res.status(400).json({ message: "Bad request" });
+  if (!req.headers.origin && !IS_DEVELOPMENT)
+    return res.status(400).json({ message: "Bad request" });
   next();
 });
 app.use(cors(corsOptions));
@@ -91,9 +96,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/student", checkStudentAuth, studentRoutes);
 app.use("/api/advisor", checkStaffAuth, advisorRoutes);
 app.use("/api/a", checkAdminAuth, adminRoutes);
-
-// route to update the server and client
-app.use("/api/update-image", update_Image); // ! no login
 
 // listening to port
 try {

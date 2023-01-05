@@ -6,25 +6,6 @@ require("dotenv").config();
 
 const JWT_SECRET_KEY = process.env.JWT;
 
-const updateReport = async (req, res, next) => {
-  const filter = {
-    batch: req.body.batch,
-    degree: req.body.degree,
-    section: req.body.section,
-    semester: req.body.semester,
-  };
-
-  let a = [];
-
-  let responses = await Responses.find(filter);
-
-  responses.map(index, (response) => {
-    let subjectResponses = response.subjects.response;
-
-    subjectResponses.map(index, (singleSubjectResponse) => {});
-  });
-};
-
 // middleware
 //middleware function to check if the incoming request in authenticated:
 const checkStaffAuth = async (req, res, next) => {

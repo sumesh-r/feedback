@@ -6,13 +6,13 @@ const {
   studentLogout,
   staffLogin,
   staffLogout,
-} = require("#controllers/auth-controller.js");
+} = require("#controllers/authController.js");
 
 // route - /api/auth...
 router.post("/student/login", studentLogin);
 router.post("/student/logout", studentLogout);
 router.post("/staff/login", staffLogin);
 router.post("/staff/logout", staffLogout);
-router.post("/user/login", staffLogin);
+
 
 module.exports = router;

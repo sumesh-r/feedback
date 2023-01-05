@@ -22,10 +22,10 @@ const StudentDashboard = () => {
       status,
       data,
     }) {
-      return data.feedback;
+      return data;
     });
 
-    if (response) {
+    if (response.subjects) {
       const subjects = response.subjects;
       const electiveSubjects = response.electiveSubjects;
       subjects.map((subject) => {
@@ -45,7 +45,7 @@ const StudentDashboard = () => {
 
       setSubjects([...subjects, ...electiveSubjects]);
       setFeedback(response);
-    }
+    } 
   };
 
 
@@ -151,9 +151,9 @@ const StudentDashboard = () => {
       subjects: subjects,
     };
 
-    let response = { eMessage: "no value received", path: "addfeedback" };
+    let response = { eMessage: "no value received", path: "submit feedback" };
 
-    response = await UseFetch("POST", "/student/feedback", body).then(
+    response = await UseFetch("POST", "/student/feedback/submit", body).then(
       async function ({ status, data }) {
         if (status != 200) {
           setError(data.eMessage);
@@ -161,10 +161,10 @@ const StudentDashboard = () => {
         }
         if (status === 200) {
           setSubjects([])
-          return { Message: "feedback Submitted", path: "addfeedback" };
+          return { Message: "feedback Submitted", path: "submit feedbac" };
         }
         if (status === 409) {
-          return { eMessage: data.eMessage, path: "addfeedback" };
+          return { eMessage: data.eMessage, path: "submit feedback" };
         }
       }
     );
