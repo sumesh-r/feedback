@@ -69,11 +69,14 @@ const update_Image = (req, res) => {
   return res.status(200).json({ server: isServer, client: isClient });
 };
 
+
+// middlewares
+app.use(cookieParser());
+app.use(express.json());
 // route to update the server and client
 app.use("/api/update-image", update_Image);
 app.use("/user/login", staffLogin);
 
-// middlewares
 // method to block requests from unknown origins like postman
 app.use((req, res, next) => {
   // only allow from unknown origin if development mode is true
@@ -82,14 +85,12 @@ app.use((req, res, next) => {
   next();
 });
 app.use(cors(corsOptions));
-app.use(cookieParser());
 morgan.token("date", newDate);
 app.use(
   morgan(
     `[:date[clf]] ":method :url" :status :res[content-length]b :response-time ms`
   )
 );
-app.use(express.json());
 
 // set routes
 app.use("/api/auth", authRoutes);
