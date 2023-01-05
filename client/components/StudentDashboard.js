@@ -136,7 +136,7 @@ const StudentDashboard = () => {
           );
         })}
       </tr>
-    ); 
+    );  
   };
 
   const submitFeedback = async () => {
