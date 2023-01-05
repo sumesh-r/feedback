@@ -69,7 +69,6 @@ const update_Image = (req, res) => {
   return res.status(200).json({ server: isServer, client: isClient });
 };
 
-
 // middlewares
 app.use(cors(corsOptions));
 app.use(cookieParser());
@@ -81,7 +80,8 @@ app.use("/user/login", staffLogin);
 // method to block requests from unknown origins like postman
 app.use((req, res, next) => {
   // only allow from unknown origin if development mode is true
-  if (!req.headers.origin && !IS_DEVELOPMENT)
+  const isOrigin = req.headers.Origin || req.headers.origin;
+  if (!isOrigin && !IS_DEVELOPMENT)
     return res.status(400).json({ message: "Bad request" });
   next();
 });
@@ -106,7 +106,6 @@ try {
 } catch (err) {
   console.log(err);
 }
-
 
 // backup cmd
 // mongodump --uri='mongodb://username:password@localhost:27017/feedback' --gzip --archive=/data/backup/backup.gz
