@@ -103,14 +103,3 @@ try {
 // mongodump --uri='mongodb://username:password@localhost:27017/feedback' --gzip --archive=/data/backup/backup.gz
 // restore cmd
 // mongorestore mongodb://username:password@0.0.0.0:27017/feedback --gzip --archive=./temp.gz --authenticationDatabase=admin
-
-// * TODO: cors stop postman
-// * TODO: removed unwanted dependencies
-// * TODO: change way of handling passwords
-// * TODO: update server automatically
-// TODO: check if student regNo belongs to same class in elective
-// TODO: student submit feedback
-// TODO: change useEffect to something
-// TODO: generate report after initiating feedback
-// TODO: crud advisors by admin
-// TODO: reset passwords
