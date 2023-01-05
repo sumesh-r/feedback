@@ -6,7 +6,7 @@ const {
   studentLogout,
   staffLogin,
   staffLogout,
-} = require("#controllers/authController.js");
+} = require("#controllers/authControllers.js");
 
 // route - /api/auth...
 router.post("/student/login", studentLogin);

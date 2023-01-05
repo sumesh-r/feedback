@@ -15,7 +15,7 @@ const {
   checkStaffAuth,
   checkStudentAuth,
 } = require("#middlewares/checkAuth.js");
-const { staffLogin } = require("#controllers/authController.js");
+const { staffLogin } = require("#controllers/authControllers.js");
 // for routes
 const studentRoutes = require("#routes/student-routes.js");
 const advisorRoutes = require("#routes/advisor-routes.js");
@@ -102,8 +102,8 @@ try {
   app.listen(PORT, () => {
     console.log(`listening on port ${PORT}  Date: ${newDate()}`);
   });
-} catch (error) {
-  console.log(error);
+} catch (err) {
+  console.log(err);
 }
 
 // backup cmd
