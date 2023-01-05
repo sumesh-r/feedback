@@ -7,7 +7,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 // for updating the server and client
 const cp = require("child_process");
-// for connecting database
+// for connecting database new change
 const connection = require("./db");
 // for checking authentication
 const {

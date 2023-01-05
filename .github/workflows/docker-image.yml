@@ -89,6 +89,6 @@ jobs:
           -H 'Content-Type: application/json' \
           -d '{"userName":"'"$USER"'","password":"'"$PASSWORD"'"}'
           COMMIT_ID=$(echo -n "$GITHUB_SHA" | cut -c-7)
-          curl -X POST $URL/update-image \
+          curl -X POST $URL/api/update-image \
           -H 'Content-Type: application/json' \
           -d '{"server":"'"$SERVER_STATUS"'","client":"'"$CLIENT_STATUS"'","commit_id":"'"$COMMIT_ID"'"}'
