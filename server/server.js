@@ -71,6 +71,7 @@ const update_Image = (req, res) => {
 
 
 // middlewares
+app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 // route to update the server and client
@@ -84,7 +85,6 @@ app.use((req, res, next) => {
     return res.status(400).json({ message: "Bad request" });
   next();
 });
-app.use(cors(corsOptions));
 morgan.token("date", newDate);
 app.use(
   morgan(
