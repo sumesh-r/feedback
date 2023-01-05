@@ -39,10 +39,10 @@ const corsOptions = {
   contentType: "application/json",
 };
 
-const update_Image = (req, res, next) => {
+const update_Image = (req, res) => {
   //   Server update command : docker service update -d --image tamilarasug/feedback-server:latest backend_server
   // client update command : docker service update -d --image tamilarasug/feedback-client:latest frontend_client
-  const { commit_id, server , client } = req.body;
+  const { commit_id, server, client } = req.body;
   const isServer = server === "true";
   const isClient = client === "true";
 
@@ -52,10 +52,14 @@ const update_Image = (req, res, next) => {
     );
     cp.exec("updateScript server client");
   } else if (isServer) {
-    console.log(`updating server with commit id: ${commit_id}  Date: ${newDate()}`);
+    console.log(
+      `updating server with commit id: ${commit_id}  Date: ${newDate()}`
+    );
     cp.exec("updateScript server");
   } else if (isClient) {
-    console.log(`updating client with commit id:${commit_id}  Date: ${newDate()}`);
+    console.log(
+      `updating client with commit id:${commit_id}  Date: ${newDate()}`
+    );
     cp.exec("updateScript client");
   } else {
     return res.status(400).json({ eMessage: "bad request" });
