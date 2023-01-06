@@ -78,18 +78,16 @@ app.use("/api/update-image", update_Image);
 app.use("/user/login", staffLogin);
 
 // method to block requests from unknown origins like postman
-app.use((req, res, next) => {
-  // only allow from unknown origin if development mode is true
-  let isOrigin = false;
-  if (req.headers.Origin || req.headers.origin) isOrigin = true;
-  console.log("origin = ", req.headers.origin);
-  console.log("Origin = ", req.headers.Origin);
-  console.log("!isOrigin && !IS_DEVELOPMENT = ", !isOrigin && !IS_DEVELOPMENT);
-  console.log(req);
-  if (!isOrigin && !IS_DEVELOPMENT)
-    return res.status(400).json({ message: "Bad request" });
-  next();
-});
+// app.use((req, res, next) => {
+//   // only allow from unknown origin if development mode is true
+//   let isOrigin = false;
+//   if (req.headers.Origin || req.headers.origin) isOrigin = true;
+//   console.log("origin = ", req.headers.origin);
+//   console.log("Origin = ", req.headers.Origin);
+//   if (!isOrigin && !IS_DEVELOPMENT)
+//     return res.status(400).json({ message: "Bad request" });
+//   next();
+// });
 morgan.token("date", newDate);
 app.use(
   morgan(
