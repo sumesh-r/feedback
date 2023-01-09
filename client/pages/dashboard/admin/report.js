@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import UseFetch from "@hooks/useFetch";
 import { useRouter } from "next/router";
-import ReadOnlyRow from "@facultyComponents/ReadOnlyRow";
 import ReactTable from "@components/ReactTable";
 import { remarkHeaders } from "@utils/constants";
 
@@ -109,47 +108,6 @@ const Report = () => {
   useEffect(() => {
     fetchReport();
   }, []);
-
-  const SubjecqtsTable = () => {
-    return (
-      <div className="w-full flex flex-col justify-center">
-        {/* add btn */}
-        {subjects[0] ? (
-          <div className="w-full flex justify-center">
-            <table className="w-full divide-y my-10  divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  {subjectsColumns.map((column, idx) => {
-                    return (
-                      <th
-                        key={idx}
-                        className="px-8 py-3 text-center text-xs font-medium
-                text-gray-500 uppercase"
-                      >
-                        {column.Header}
-                      </th>
-                    );
-                  })}
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {subjectsData.map((subject, idx) => (
-                  <ReadOnlyRow idx={idx} subject={subject} />
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <div className="text-1xl mb-10 flex justify-center">
-            No Subjects Exists
-          </div>
-        )}
-      </div>
-    );
-  };
-  const SubjectsTable = () => {
-    return <div className="w-full flex flex-col justify-center"></div>;
-  };
 
   return (
     <div className="flex flex-col items-center w-full pt-8">
