@@ -29,7 +29,7 @@ const subjectSchema = mongoose.Schema(
 const electiveSubjectSchema = mongoose.Schema(
   {
     regNo: {
-      type: String,
+      type: Number,
       required: true,
     },
     subjectCode: {

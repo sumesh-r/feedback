@@ -74,20 +74,6 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 // route to update the server and client
-app.use("/api/update-image", update_Image);
-app.use("/user/login", staffLogin);
-
-// method to block requests from unknown origins like postman
-// app.use((req, res, next) => {
-//   // only allow from unknown origin if development mode is true
-//   let isOrigin = false;
-//   if (req.headers.Origin || req.headers.origin) isOrigin = true;
-//   console.log("origin = ", req.headers.origin);
-//   console.log("Origin = ", req.headers.Origin);
-//   if (!isOrigin && !IS_DEVELOPMENT)
-//     return res.status(400).json({ message: "Bad request" });
-//   next();
-// });
 morgan.token("date", newDate);
 app.use(
   morgan(
@@ -96,6 +82,8 @@ app.use(
 );
 
 // set routes
+app.use("/api/update-image", update_Image);
+app.use("api/auth/user/login", staffLogin);
 app.use("/api/auth", authRoutes);
 app.use("/api/student", checkStudentAuth, studentRoutes);
 app.use("/api/advisor", checkStaffAuth, advisorRoutes);

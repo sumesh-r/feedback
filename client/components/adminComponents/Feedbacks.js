@@ -4,7 +4,7 @@ import { GlobalFilter } from "@components/GlobalFilter";
 import UseFetch from "@hooks/useFetch";
 import { HiPencilAlt, HiTrash } from "react-icons/hi";
 import { useRouter } from "next/router";
-import FeedbackModel from "@adminComponents/FeedbackModel";
+import FeedbackModel from "@adminBlocks/FeedbackModel";
 
 const Feedbacks = () => {
   const [feedbacks, setFeedbacks] = useState([]);

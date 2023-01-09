@@ -8,10 +8,10 @@ export const Dashboard = () => {
   const [liveFeedback, setLiveFeedback] = useState({});
 
   const fetchStudents = async () => {
-    const response = await UseFetch("GET", "/advisor/feedback/dashboard/get").then(function ({
-      status,
-      data,
-    }) {
+    const response = await UseFetch(
+      "GET",
+      "/advisor/feedback/dashboard/get"
+    ).then(function ({ status, data }) {
       if (status === 401) return "not 200 status";
       return data;
     });
@@ -120,10 +120,11 @@ export const Dashboard = () => {
       >
         Students not Submitted
       </div>
-
-      <ReactTable columns={studentsColumns} data={studentsData} />
+      <div className="flex w-9/12 flex-col justify-center">
+        <ReactTable columns={studentsColumns} data={studentsData} />
+      </div>
     </div>
-  )
-}
+  );
+};
 
 export default Dashboard;

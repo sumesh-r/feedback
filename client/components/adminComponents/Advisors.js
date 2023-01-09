@@ -3,7 +3,7 @@ import { useGlobalFilter, useSortBy, useTable } from "react-table";
 import { GlobalFilter } from "@components/GlobalFilter";
 import UseFetch from "@hooks/useFetch";
 import { HiPencilAlt, HiTrash } from "react-icons/hi";
-import AdvisorModel from "@adminComponents/AdvisorModel"
+import AdvisorModel from "@components/adminComponents/blocks/AdvisorModel"
 
 
 const Advisors = () => {

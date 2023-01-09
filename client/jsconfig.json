@@ -4,7 +4,9 @@
     "paths": {
       "@components/*": ["components/*"],
       "@adminComponents/*": ["components/adminComponents/*"],
+      "@adminBlocks/*": ["components/adminComponents/blocks/*"],
       "@facultyComponents/*": ["components/facultyComponents/*"],
+      "@facultyBlocks/*": ["components/facultyComponents/blocks/*"],
       "@context/*": ["context/*"],
       "@hooks/*": ["hooks/*"],
       "@styles/*": ["styles/*"],

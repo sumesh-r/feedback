@@ -14,5 +14,4 @@ router.post("/student/logout", studentLogout);
 router.post("/staff/login", staffLogin);
 router.post("/staff/logout", staffLogout);
 
- 
 module.exports = router;

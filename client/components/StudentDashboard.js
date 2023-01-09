@@ -18,16 +18,15 @@ const StudentDashboard = () => {
   });
 
   const fetchSubjects = async () => {
-    const response = await UseFetch("GET", "/student/feedback/get").then(function ({
-      status,
-      data,
-    }) {
-      return data;
-    });
+    const response = await UseFetch("GET", "/student/feedback/get").then(
+      function ({ status, data }) {
+        return data;
+      }
+    );
+    let subjects = response.subjects || [];
+    let electiveSubjects = response.electiveSubjects || [];
 
-    if (response.subjects) {
-      const subjects = response.subjects;
-      const electiveSubjects = response.electiveSubjects;
+    if (subjects[0]) {
       subjects.map((subject) => {
         (subject["subjectKnowledge"] = -1),
           (subject["clearExplanation"] = -1),
@@ -35,6 +34,8 @@ const StudentDashboard = () => {
           (subject["extraInput"] = -1),
           (subject["teacherStudentRelationship"] = -1);
       });
+    }
+    if (electiveSubjects[0]) {
       electiveSubjects.map((electiveSubjects) => {
         (electiveSubjects["subjectKnowledge"] = -1),
           (electiveSubjects["clearExplanation"] = -1),
@@ -42,12 +43,16 @@ const StudentDashboard = () => {
           (electiveSubjects["extraInput"] = -1),
           (electiveSubjects["teacherStudentRelationship"] = -1);
       });
-
+    }
+    if (subjects[0] && electiveSubjects[0]){
       setSubjects([...subjects, ...electiveSubjects]);
-      setFeedback(response);
-    } 
+    } else if (subjects[0]) {
+      setSubjects([...subjects]);
+    } else if (electiveSubjects[0]) {
+      setSubjects([...electiveSubjects]);
+    }
+    setFeedback(response);
   };
-
 
   const subjectsColumns = useMemo(
     () => [
@@ -136,7 +141,7 @@ const StudentDashboard = () => {
           );
         })}
       </tr>
-    );  
+    );
   };
 
   const submitFeedback = async () => {
@@ -160,7 +165,7 @@ const StudentDashboard = () => {
           return data;
         }
         if (status === 200) {
-          setSubjects([])
+          setSubjects([]);
           return { Message: "feedback Submitted", path: "submit feedbac" };
         }
         if (status === 409) {
@@ -176,7 +181,7 @@ const StudentDashboard = () => {
   const submitData = async (e) => {
     e.preventDefault();
     let unFilled = 0;
-    await subjects.map((subject) => {
+    subjects.map((subject) => {
       remarkHeaders.map((header) => {
         if (subject[header] === -1) {
           unFilled = unFilled + 1;

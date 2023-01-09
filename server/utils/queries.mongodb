@@ -1,106 +1,127 @@
 
-// switch to feedback database
-use("feedback")
+// // switch to feedback database
+// use("feedback")
 
-// show collections
-db.getCollectionNames()
+// // show collections
+// db.getCollectionNames()
 
-// get a particular class
-db.students.find({batch: 2020, degree: "BE-CSE", section:"C"},{password:0, _id:0, "feedbacks._id": 0})
+// // get a particular class
+// db.students.find({batch: 2020, degree: "BE-CSE", section:"C"},{password:0, _id:0, "feedbacks._id": 0})
 
-db.students.find(
-    {batch: 2020, degree: "BE-CSE", section:"C"}
-    ,{password: 0, dob: 0, batch: 0, degree: 0, section: 0, _id:0, "feedbacks._id":0  }
-)
+// db.students.find(
+//     {batch: 2020, degree: "BE-CSE", section:"C"}
+//     ,{password: 0, dob: 0, batch: 0, degree: 0, section: 0, _id:0, "feedbacks._id":0  }
+// )
 
-// students who have not submitted a feedback
-db.students.find(
-    {
-        batch: 2020,
-        degree: "BE-CSE",
-        section:"C",
-        'feedbacks.feedbackNo': "I",
-        'feedbacks.semester': "V",
-        "feedbacks.isSubmitted": false
-    },
-    {
-        regNo: 1,
-        name: 1,
-        _id:0,  
-    }
-)
-
-// update the students profile after the student
-// has submitted a feedback
-// db.students.updateOne(
+// // students who have not submitted a feedback
+// db.students.find(
 //     {
-//         regNo: 20104169,
-//         'feedbacks.semester': "V",
+//         batch: 2020,
+//         degree: "BE-CSE",
+//         section:"C",
 //         'feedbacks.feedbackNo': "I",
+//         'feedbacks.semester': "V",
+//         "feedbacks.isSubmitted": false
 //     },
 //     {
-//         $set: {
-//         "feedbacks.$.isSubmitted": true
-//         }
+//         regNo: 1,
+//         name: 1,
+//         _id:0,  
 //     }
 // )
 
-// update the name of students to uppercase
-db.students.aggregate(
-   [
-     {
-       $project:
-         {
-           regNo: 1,
-           name: { $toUpper: "$name" },
-           dob: 1,
-           batch: 1,
-           degree: 1,
-           section: 1,
-           password: 1,
-           feedbacks : 1
-         }
-     },
-    //  {
-    //     $out: {
-    //         db: 'feedback',
-    //         coll: 'students',
-    //     }
-    //  }
-   ]
-)
+// // update the students profile after the student
+// // has submitted a feedback
+// // db.students.updateOne(
+// //     {
+// //         regNo: 20104169,
+// //         'feedbacks.semester': "V",
+// //         'feedbacks.feedbackNo': "I",
+// //     },
+// //     {
+// //         $set: {
+// //         "feedbacks.$.isSubmitted": true
+// //         }
+// //     }
+// // )
 
-const pr = db.freport.findOne({
-       "batch": 2020,
-  "degree": "BE-CSE",
-  "semester": "V",
-  "section": "C",
-  "feedbackNo": "I",
-  })
+// // update the name of students to uppercase
+// db.students.aggregate(
+//    [
+//      {
+//        $project:
+//          {
+//            regNo: 1,
+//            name: { $toUpper: "$name" },
+//            dob: 1,
+//            batch: 1,
+//            degree: 1,
+//            section: 1,
+//            password: 1,
+//            feedbacks : 1
+//          }
+//      },
+//     //  {
+//     //     $out: {
+//     //         db: 'feedback',
+//     //         coll: 'students',
+//     //     }
+//     //  }
+//    ]
+// )
 
-db.freport.updateOne({ 
-   "batch": 2020,
-  "degree": "BE-CSE",
-  "semester": "V",
-  "section": "C",
-  "feedbackNo": "I",
-  "subjects.subjectCode": "19CS5201"
+// const pr = db.freport.findOne({
+//        "batch": 2020,
+//   "degree": "BE-CSE",
+//   "semester": "V",
+//   "section": "C",
+//   "feedbackNo": "I",
+//   })
+
+// db.freport.updateOne({ 
+//    "batch": 2020,
+//   "degree": "BE-CSE",
+//   "semester": "V",
+//   "section": "C",
+//   "feedbackNo": "I",
+//   "subjects.subjectCode": "19CS5201"
+//   },
+//   {
+//     $set: {
+//         "subjects.$.subjectKnowledge": ,
+//         "subjects.$.clearExplanation": 2,
+//         "subjects.$.usageOfTeachingTools": 2,
+//         "subjects.$.extraInput": 2,
+//         "subjects.$.teacherStudentRelationship": 2,
+//     }
+//   }
+//   )
+
+
+db.freports.updateOne({
+  batch: 2020,
+  degree: "BE-CSE",
+  section: "C",
+  semester: "V",
+  feedbackNo: "I"
+ "subjects.subjectCode": "19CS5201"
   },
   {
     $set: {
-        "subjects.$.subjectKnowledge": ,
+        "subjects.$.subjectKnowledge": {},
         "subjects.$.clearExplanation": 2,
         "subjects.$.usageOfTeachingTools": 2,
         "subjects.$.extraInput": 2,
         "subjects.$.teacherStudentRelationship": 2,
-    }
-  }
-  )
+    } 
+})
 
-  db.freport.findOne({
-       "batch": 2020,
-  "degree": "BE-CSE",
-  "semester": "V",
-  "section": "C",
-  "feedbackNo": "I",
-  })
+
+db.freports.findOne({
+  batch: 2020,
+  degree: "BE-CSE",
+  section: "C",
+  semester: "V",
+  feedbackNo: "I"
+})
+

@@ -2,94 +2,53 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useGlobalFilter, useSortBy, useTable } from "react-table";
 import { GlobalFilter } from "@components/GlobalFilter";
 import UseFetch from "@hooks/useFetch";
-import { HiPencilAlt, HiTrash } from "react-icons/hi";
+import { AiOutlineFullscreen } from "react-icons/ai";
 import { useRouter } from "next/router";
-import FeedbackModel from "@adminComponents/FeedbackModel";
 
 const Reports = () => {
-  const [feedbacks, setFeedbacks] = useState([]);
-  const [openAddFeedbackModal, setOpenAddFeedbackModal] = useState(false);
-  const [details, setDetails] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [reports, setReports] = useState([]);
   const router = useRouter();
 
-  const handleFeedbackModal = () => {
-    setOpenAddFeedbackModal(!openAddFeedbackModal);
-  };
+  const fetchReports = async () => {
+    const response = await UseFetch("GET", "/a/reports/get").then(function ({
+      status,
+      data,
+    }) {
+      if (status === 401) return router.push("/");
 
-  const fetchFeedbacks = async () => {
-    const response = await UseFetch("GET", "/a/feedbacks/get").then(
-      function ({ status, data }) {
-        if (status === 401) return "not 200 status";
-        data.map((feedback) => {
-          if (feedback.isLive) {
-            feedback.isLive = "Active";
-          } else {
-            feedback.isLive = "InActive";
-          }
-        });
-        return data;
-      }
-    );
+      return data;
+    });
 
     if (response) {
-      const feedbacks = response;
-      setFeedbacks(feedbacks);
+      const reports = response;
+      setReports(reports);
     }
   };
 
-  const feedbacksData = useMemo(() => [...feedbacks], [feedbacks]);
-  const feedbacksColumns = useMemo(
+  const reportsData = useMemo(() => [...reports], [reports]);
+  const reportsColumns = useMemo(
     () =>
-      feedbacks[0]
-        ? Object.keys(feedbacks[0]).map((key) => {
-            if (key === "isLive")
-              return {
-                Header: key,
-                accessor: key,
-                Cell: ({ value }) => (
-                  <span
-                    className={`${
-                      value === "Active"
-                        ? "rounded p-0.5 bg-green-100 text-green-800"
-                        : "rounded p-0.5 bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {value}
-                  </span>
-                ),
-              };
+      reports[0]
+        ? Object.keys(reports[0]).map((key) => {
             return { Header: key, accessor: key };
           })
         : [],
-    [feedbacks]
+    [reports]
   );
 
   const tableHooks = (hooks) => {
     hooks.visibleColumns.push((columns) => [
       ...columns,
       {
-        id: "Edit",
-        Header: "Edit",
+        id: "Open",
+        Header: "Open",
         Cell: ({ row }) => (
-          <HiPencilAlt
+          <AiOutlineFullscreen
             className="text-dark-purple w-full text-center cursor-pointer"
             onClick={() => {
               router.push(
-                `/dashboard/admin/feedback?s=${row.values.semester}&f=${row.values.feedbackNo}&b=${row.values.batch}&d=${row.values.degree}&sc=${row.values.section}`
+                `/dashboard/admin/report?s=${row.values.semester}&f=${row.values.feedbackNo}&b=${row.values.batch}&d=${row.values.degree}&sc=${row.values.section}`
               );
-            }}
-          />
-        ),
-      },
-      {
-        id: "Delete",
-        Header: "Delete",
-        Cell: ({ row }) => (
-          <HiTrash
-            className="text-dark-purple w-full text-center cursor-pointer"
-            onClick={() => {
-              deleteFeedback(row.values);
             }}
           />
         ),
@@ -99,25 +58,13 @@ const Reports = () => {
 
   const tableInstance = useTable(
     {
-      columns: feedbacksColumns,
-      data: feedbacksData,
+      columns: reportsColumns,
+      data: reportsData,
     },
     useGlobalFilter,
     tableHooks,
     useSortBy
   );
-
-  const deleteFeedback = async (data) => {
-    let body = {
-      batch: data.batch,
-      degree: data.degree,
-      section: data.section,
-      semester: data.semester,
-      feedbackNo: data.feedbackNo,
-    };
-    const response = await UseFetch("POST", "/a/feedback/delete", body);
-    fetchFeedbacks();
-  };
 
   const {
     getTableProps,
@@ -131,7 +78,7 @@ const Reports = () => {
   } = tableInstance;
 
   useEffect(() => {
-    fetchFeedbacks();
+    fetchReports();
   }, []);
 
   const isEven = (idx) => idx % 2 === 0;
@@ -146,16 +93,6 @@ const Reports = () => {
         Reports
       </h1>
 
-      {openAddFeedbackModal ? (
-        <FeedbackModel
-          callback={handleFeedbackModal}
-          fetchFeedbacks={fetchFeedbacks}
-          isEdit={false}
-        />
-      ) : (
-        ""
-      )}
-
       {/* feedbacks */}
       <div className=" w-9/12 flex flex-row h-5 justify-between items-center">
         <GlobalFilter
@@ -163,17 +100,6 @@ const Reports = () => {
           setGlobalFilter={setGlobalFilter}
           globalFilter={state.globalFilter}
         />
-        <div className=" rounded-lg mt-5">
-          <button
-            onClick={() => {
-              setOpenAddFeedbackModal(true);
-            }}
-            className="bg-dark-purple bg-opacity-30 
-        py-2 px-4 rounded text-white shadow-md"
-          >
-            Add Feedback
-          </button>
-        </div>
       </div>
       {/* table */}
       <div className="w-full flex justify-center">

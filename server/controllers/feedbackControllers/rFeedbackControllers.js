@@ -135,7 +135,7 @@ const getFeedbackForStudent = async (req, res) => {
   /**
    BODY = {}
    */
-  let feedbackFilter, feedback, studentFilter, student;
+  let feedbackFilter, feedback, studentFilter, student, electiveSubjects;
   feedbackFilter = {
     batch: req.batch,
     degree: req.degree,
@@ -161,6 +161,14 @@ const getFeedbackForStudent = async (req, res) => {
   student = await tryCatch(Student.findOne(studentFilter, {feedbacks: 1, _id:0}))
   if(student.feedbacks[0].isSubmitted)
     return res.status(200).json({message: "no feedback to submit"})
+
+  electiveSubjects = feedback.electiveSubjects.map((electiveSubject, idx) => {
+    if (electiveSubject?.regNo === req.regNo) {
+      return electiveSubject;
+    }
+  });
+
+  feedback.electiveSubjects = electiveSubjects
 
   return res.status(200).json(feedback);
 };

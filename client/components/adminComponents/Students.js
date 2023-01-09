@@ -4,7 +4,7 @@ import { GlobalFilter } from "@components/GlobalFilter";
 import UseFetch from "@hooks/useFetch";
 import { HiPencilAlt, HiTrash } from "react-icons/hi";
 import { batches, degrees, sections } from "@utils/constants";
-import StudentModel from "@adminComponents/StudentModel";
+import StudentModel from "@components/adminComponents/StudentModel";
 
 const Students = () => {
   const [students, setStudents] = useState([]);
