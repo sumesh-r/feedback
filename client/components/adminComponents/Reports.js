@@ -19,7 +19,7 @@ const Reports = () => {
       return data;
     });
 
-    if (response) {
+    if (response && !response[0]?.message) {
       const reports = response;
       setReports(reports);
     }

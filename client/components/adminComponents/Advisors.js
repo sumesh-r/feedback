@@ -3,8 +3,7 @@ import { useGlobalFilter, useSortBy, useTable } from "react-table";
 import { GlobalFilter } from "@components/GlobalFilter";
 import UseFetch from "@hooks/useFetch";
 import { HiPencilAlt, HiTrash } from "react-icons/hi";
-import AdvisorModel from "@components/adminComponents/blocks/AdvisorModel"
-
+import AdvisorModel from "@components/adminComponents/blocks/AdvisorModel";
 
 const Advisors = () => {
   const [advisors, setAdvisors] = useState([]);
@@ -13,38 +12,39 @@ const Advisors = () => {
   const [editData, setEditData] = useState({});
 
   const handleAdvisorModel = () => {
-    setOpenAdvisorModel(!openAdvisorModel)
-  }
+    setOpenAdvisorModel(!openAdvisorModel);
+  };
   const handleEditAdvisorModel = () => {
-    setEditAdvisorModel(!editAdvisorModel)
-  }
+    setEditAdvisorModel(!editAdvisorModel);
+  };
 
   const handleDeleteAdvisor = async (userName) => {
     const body = { userName: userName };
-    const response = await UseFetch(
-      "POST",
-      "/a/advisor/delete",
-      body
-    ).then(function ({ status, data }) {
-      if (status === 401) {
-        router.push("/");
-        return "not 200 status";
+    const response = await UseFetch("POST", "/a/advisor/delete", body).then(
+      function ({ status, data }) {
+        if (status === 401) {
+          router.push("/");
+          return "not 200 status";
+        }
+        if (status === 200) {
+          fetchAdvisors();
+        }
+        return data;
       }
-      if (status === 200) {
-        fetchAdvisors();
-      }
-      return data;
-    });
-  }
+    );
+  };
 
   const fetchAdvisors = async () => {
     const response = await UseFetch("GET", "/a/advisors/get").then(function ({
       status,
       data,
     }) {
-      if (status ===401) {
-          router.push("/")
-          return ""
+      if (status === 401) {
+        router.push("/");
+        return "";
+      }
+      if (data[0]?.message) {
+        data = [];
       }
       return data;
     });

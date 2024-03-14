@@ -55,7 +55,7 @@ const getFeedbacks = async (req, res) => {
   if (feedbacks?.notOkay) return res.status.json(feedbacks?.error);
 
   if (!feedbacks[0]) {
-    return res.status(409).json({ message: "feedbacks doesn't exists" });
+    return res.status(409).json([{ message: "feedbacks doesn't exists" }]);
   }
 
   return res.status(200).json(feedbacks);
@@ -158,17 +158,19 @@ const getFeedbackForStudent = async (req, res) => {
     "feedbacks.feedbackNo": feedback.feedbackNo,
   };
 
-  student = await tryCatch(Student.findOne(studentFilter, {feedbacks: 1, _id:0}))
-  if(student.feedbacks[0].isSubmitted)
-    return res.status(200).json({message: "no feedback to submit"})
+  student = await tryCatch(
+    Student.findOne(studentFilter, { feedbacks: 1, _id: 0 })
+  );
+  if (student.feedbacks[0].isSubmitted)
+    return res.status(200).json({ message: "no feedback to submit" });
+  // const data = subjects.find(
+  //   (sub) => sub.subjectCode === subject.subjectCode
+  // );
+  electiveSubjects = feedback.electiveSubjects.find(
+    (electiveSubject) => electiveSubject.regNo === req.regNo
+  );
 
-  electiveSubjects = feedback.electiveSubjects.map((electiveSubject, idx) => {
-    if (electiveSubject?.regNo === req.regNo) {
-      return electiveSubject;
-    }
-  });
-
-  feedback.electiveSubjects = electiveSubjects
+  feedback.electiveSubjects = electiveSubjects;
 
   return res.status(200).json(feedback);
 };

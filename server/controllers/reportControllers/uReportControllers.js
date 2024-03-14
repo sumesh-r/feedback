@@ -1,5 +1,4 @@
 const { Report } = require("#models/Report.js");
-const { Response } = require("#models/Response.js");
 const { Student } = require("#models/Student.js");
 // for handle queries
 const { tryCatch } = require("#utils/tryCatch.js");
@@ -55,6 +54,7 @@ const submitFeedbackForStudent = async (req, res) => {
     semester: req.body.semester,
     feedbackNo: req.body.feedbackNo,
   };
+
   subjects = req.body.subjects;
   const studentFilter = {
     regNo: req.regNo,
@@ -79,15 +79,64 @@ const submitFeedbackForStudent = async (req, res) => {
     if (isSubmitted) alreadySubmitted = true;
   });
 
-  if (alreadySubmitted) return res.status(200).json({message:"no feedback to submit"});
+  if (alreadySubmitted)
+    return res.status(200).json({ message: "no feedback to submit" });
 
-  const responseData = {
+  // const responseData = {
+  //   ...reportFilter,
+  //   subjects: subjects,
+  // };
+
+  // let response = await tryCatch(Response(responseData).save());
+  // if (response?.notOkay) return res.status(500).json(response?.error);
+
+  const updatedReport = {
     ...reportFilter,
-    subjects: subjects,
+    subjects: report.subjects.map((subject, idx) => {
+      const data = subjects.find(
+        (sub) => sub.subjectCode === subject.subjectCode
+      );
+      if (data) {
+        if (subject.totalResponse === 0) {
+          subject.subjectKnowledge = data.subjectKnowledge;
+          subject.clearExplanation = data.clearExplanation;
+          subject.usageOfTeachingTools = data.usageOfTeachingTools;
+          subject.extraInput = data.extraInput;
+          subject.teacherStudentRelationship = data.teacherStudentRelationship;
+          subject.totalResponse = 1;
+        } else {
+          subject.subjectKnowledge =
+            (subject.subjectKnowledge + data.subjectKnowledge) / 2;
+          subject.clearExplanation =
+            (subject.clearExplanation + data.clearExplanation) / 2;
+          subject.usageOfTeachingTools =
+            (subject.usageOfTeachingTools + data.usageOfTeachingTools) / 2;
+          subject.extraInput = (subject.extraInput + data.extraInput) / 2;
+          subject.teacherStudentRelationship =
+            (subject.teacherStudentRelationship +
+              data.teacherStudentRelationship) /
+            2;
+          subject.totalResponse = subject.totalResponse + 1;
+        }
+
+        subject.averageTotal =
+          (subject.subjectKnowledge +
+            subject.clearExplanation +
+            subject.usageOfTeachingTools +
+            subject.extraInput +
+            subject.teacherStudentRelationship) /
+          5;
+
+        subject.fourScaleRating = (subject.averageTotal / 10) * 4;
+      }
+      return subject;
+    }),
   };
 
-  let response = await tryCatch(Response(responseData).save());
-  if (response?.notOkay) return res.status(500).json(response?.error);
+  report = await tryCatch(
+    Report.updateOne(reportFilter, { $set: updatedReport }, { upsert: true })
+  );
+  if (report?.notOkay) return res.status(500).json(report?.error);
 
   student = await tryCatch(
     Student.updateOne(studentFilter, {
@@ -98,7 +147,9 @@ const submitFeedbackForStudent = async (req, res) => {
   );
   if (student?.notOkay) return res.status(500).json(student?.error);
 
-  return res.status(200).json({ message: "feedback Submitted" });
+  return res.status(200).json({
+    message: "feedback Submitted",
+  });
 };
 
 module.exports = {

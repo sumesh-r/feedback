@@ -69,23 +69,23 @@ const semesters = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"];
 
 const remarks = [
   {
-    value: 8,
+    value: 10,
     title: "Excellent",
   },
   {
-    value: 6,
+    value: 8,
     title: "Good",
   },
   {
-    value: 4,
+    value: 6,
     title: "Satisfactory",
   },
   {
-    value: 2,
+    value: 4,
     title: "Not Satisfactory",
   },
   {
-    value: 0,
+    value: 2,
     title: "Poor",
   },
 ];

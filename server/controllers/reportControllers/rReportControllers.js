@@ -54,7 +54,7 @@ const getReports = async (req, res) => {
   if (reports?.notOkay) return res.status.json(reports?.error);
 
   if (!reports[0]) {
-    return res.status(409).json({ message: "reports doesn't exists" });
+    return res.status(409).json([{ message: "reports doesn't exists" }]);
   }
 
   return res.status(200).json(reports);

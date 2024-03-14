@@ -5,6 +5,7 @@ import UseFetch from "@hooks/useFetch";
 import { useRouter } from "next/router";
 import { HiPencilAlt, HiTrash } from "react-icons/hi";
 import StudentModel from "@facultyComponents/StudentModel";
+import useLocalStorage from "@hooks/useLocalStorage";
 
 const Students = () => {
   const [students, setStudents] = useState([]);
@@ -50,16 +51,15 @@ const Students = () => {
           router.push("/");
           return "not 200 status";
         }
+
         return data;
       }
     );
-
-    if (response) {
+    if (response && !response?.message) {
       const students = response;
-      const details = students[0];
       setStudents(students);
-      setDetails(details);
     }
+    setDetails(JSON.parse(useLocalStorage("user")));
   };
 
   const studentsData = useMemo(() => [...students], [students]);
@@ -188,7 +188,7 @@ const Students = () => {
               rows={1}
               name="batch"
               id="batch"
-              value={details.batch}
+              value={details?.batch}
               readOnly
             />
           </div>
@@ -203,7 +203,7 @@ const Students = () => {
               rows={1}
               name="Dept_&_sec"
               id="Dept_&_sec"
-              value={`${details.degree} - ${details.section}`}
+              value={`${details?.degree}-${details?.section}`}
               readOnly
             />
           </div>

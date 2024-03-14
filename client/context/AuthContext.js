@@ -136,6 +136,7 @@ export const AuthContextProvider = ({ children }) => {
 
     response = await useFetch("POST", "/auth/staff/login", body).then(
       function ({ data, status }) {
+        console.log(status);
         if (status != 200) {
           setfacultyErrorMsg(data.eMessage);
           return data;
@@ -147,11 +148,15 @@ export const AuthContextProvider = ({ children }) => {
           localStorage.setItem("user", cipher);
 
           sessionStorage.setItem("title", "Dashboard");
+          if (data.role == "ADMIN") {
+            sessionStorage.setItem("title", "Feedbacks");
+          }
         }
         return data;
       }
     );
 
+    console.log("hi");
     setLoading(false);
   };
 
@@ -167,6 +172,7 @@ export const AuthContextProvider = ({ children }) => {
       .catch((err) => {
         console.log(err);
       });
+    sessionStorage.removeItem("title");
     setLoading(false);
   };
 

@@ -36,15 +36,15 @@ const StudentDashboard = () => {
       });
     }
     if (electiveSubjects[0]) {
-      electiveSubjects.map((electiveSubjects) => {
-        (electiveSubjects["subjectKnowledge"] = -1),
-          (electiveSubjects["clearExplanation"] = -1),
-          (electiveSubjects["usageOfTeachingTools"] = -1),
-          (electiveSubjects["extraInput"] = -1),
-          (electiveSubjects["teacherStudentRelationship"] = -1);
+      electiveSubjects.map((electiveSubject) => {
+        (electiveSubject["subjectKnowledge"] = -1),
+          (electiveSubject["clearExplanation"] = -1),
+          (electiveSubject["usageOfTeachingTools"] = -1),
+          (electiveSubject["extraInput"] = -1),
+          (electiveSubject["teacherStudentRelationship"] = -1);
       });
     }
-    if (subjects[0] && electiveSubjects[0]){
+    if (subjects[0] && electiveSubjects[0]) {
       setSubjects([...subjects, ...electiveSubjects]);
     } else if (subjects[0]) {
       setSubjects([...subjects]);
@@ -200,7 +200,7 @@ const StudentDashboard = () => {
   };
 
   function getRandomItem() {
-    const arr = [0, 2, 4, 6, 8];
+    const arr = [ 2, 4, 6, 8,10];
     // get random index value
     const randomIndex = Math.floor(Math.random() * arr.length);
 

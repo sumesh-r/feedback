@@ -14,12 +14,12 @@ const AdminDashboard = () => {
   const { facultyLogout } = useAuth();
   const router = useRouter();
   const Menus = [
-    { title: "Dashboard", src: "Chart_fill" },
+    // { title: "Dashboard", src: "Chart_fill" },
     { title: "Feedbacks", src: "Chat" },
     { title: "Reports", src: "Chat" },
     { title: "Students", src: "User" },
     { title: "Advisors", src: "User" },
-    { title: "Account", src: "User" },
+    // { title: "Account", src: "User" },
     { title: "Logout", src: "Setting", gap: true },
   ];
 
@@ -89,7 +89,7 @@ const AdminDashboard = () => {
       </aside>
       {/* components */}
       <div className={`flex w-full h-screen `}>
-        {current === "Dashboard" && <Dashboard />}
+        {/* {current === "Dashboard" && <Dashboard />} */}
         {current === "Feedbacks" && <Feedbacks />}
         {current === "Reports" && <Reports />}
         {current === "Students" && <Students />}

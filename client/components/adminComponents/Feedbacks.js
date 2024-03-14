@@ -32,7 +32,7 @@ const Feedbacks = () => {
       }
     );
 
-    if (response) {
+    if (response && !response[0]?.message) {
       const feedbacks = response;
       setFeedbacks(feedbacks);
     }

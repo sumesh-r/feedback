@@ -15,7 +15,7 @@ const FacultyDashboard = () => {
     { title: "Dashboard", src: "Chart_fill" },
     { title: "Feedbacks", src: "Chat" },
     { title: "Students", src: "User" },
-    { title: "Account", src: "User" },
+    // { title: "Account", src: "User" },
     { title: "Logout", src: "Setting", gap: true },
   ];
   const sidebarTitle = useSessionStorage("title");

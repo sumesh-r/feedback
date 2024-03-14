@@ -2,17 +2,22 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@context/AuthContext";
 
 const Login = () => {
+  const IS_DEVELOPMENT = process.env.NEXT_PUBLIC_IS_DEVELOPMENT === "true";
   // Student
-  const [regNo, setRegNo] = useState(20104169);
-  const [dob, setDob] = useState("07/03/2003");
-  const [studentPassword, setStudentPassword] = useState("hicet");
+  const [regNo, setRegNo] = useState(IS_DEVELOPMENT ? 20104169 : "");
+  const [dob, setDob] = useState(IS_DEVELOPMENT ? "07/03/2003" : "");
+  const [studentPassword, setStudentPassword] = useState(
+    IS_DEVELOPMENT ? "hicet" : ""
+  );
   const [studentError, setStudentError] = useState("");
   const { studentLogin, facultyLogin, facultyErrorMsg, studentErrorMsg } =
     useAuth();
 
   // Faculty
-  const [userName, setUserName] = useState("abcd");
-  const [facultyPassword, setFacultyPassword] = useState("hicet");
+  const [userName, setUserName] = useState(IS_DEVELOPMENT ? "admin" : "");
+  const [facultyPassword, setFacultyPassword] = useState(
+    IS_DEVELOPMENT ? "admin" : ""
+  );
   const [facultyError, setFacultyError] = useState("");
 
   useEffect(() => {

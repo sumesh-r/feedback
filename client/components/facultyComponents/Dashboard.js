@@ -16,7 +16,7 @@ export const Dashboard = () => {
       return data;
     });
 
-    if (response) {
+    if (response && !response?.message) {
       const students = response.notSubmittedStudents;
       const feedback = response.feedback;
 
@@ -106,7 +106,10 @@ export const Dashboard = () => {
               rows={1}
               name="Dept_&_sec"
               id="Dept_&_sec"
-              value={`${liveFeedback.degree} - ${liveFeedback.section}`}
+              value={
+                liveFeedback?.degree &&
+                `${liveFeedback.degree}-${liveFeedback.section}`
+              }
               readOnly
             />
           </div>

@@ -5,6 +5,7 @@ import Loading from "@components/Loading";
 import { HiPencilAlt, HiTrash } from "react-icons/hi";
 import { useRouter } from "next/router";
 import { semesters } from "@utils/constants";
+import useLocalStorage from "@hooks/useLocalStorage";
 
 const Feedbacks = () => {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -29,20 +30,16 @@ const Feedbacks = () => {
             feedback.isLive = "InActive";
           }
         });
+
         return data;
       }
     );
 
-    if (response) {
+    if (response && !response[0]?.message) {
       const feedbacks = response;
-      const details = {
-        batch: feedbacks[0].batch,
-        degree: feedbacks[0].degree,
-        section: feedbacks[0].section,
-      };
       setFeedbacks(feedbacks);
-      setDetails(details);
     }
+    setDetails(JSON.parse(useLocalStorage("user")));
     setLoading(false);
   };
 
