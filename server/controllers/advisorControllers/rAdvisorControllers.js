@@ -1,5 +1,5 @@
-const { Staff } = require("#models/Staff.js");
-const { tryCatch } = require("#utils/tryCatch.js");
+const { Staff } = require("../../models/Staff.js");
+const { tryCatch } = require("../../utils/tryCatch.js");
 
 // main methods
 const getAdvisorsForAdmin = async (req, res) => {
@@ -18,11 +18,16 @@ const getAdvisorsForAdmin = async (req, res) => {
     role: 0,
   };
 
-  advisors = await tryCatch(Staff.find(advisorsFilter, advisorsProjection));
-  if (advisors?.notOkay) return res.status(500).json(advisors?.error);
+  advisors = await tryCatch(
+    Staff.find(advisorsFilter, advisorsProjection)
+  );
+  if (advisors?.notOkay)
+    return res.status(500).json(advisors?.error);
 
   if (!advisors[0]) {
-    return res.status(200).json([{ message: "no advisors" }]);
+    return res
+      .status(200)
+      .json([{ message: "no advisors" }]);
   }
   return res.status(200).json(advisors);
 };

@@ -1,8 +1,8 @@
-const { Feedback } = require("#models/Feedback.js");
-const { Report } = require("#models/Report.js");
-const { Student } = require("#models/Student.js");
+const { Feedback } = require("../../models/Feedback.js");
+const { Report } = require("../../models/Report.js");
+const { Student } = require("../../models/Student.js");
 // for handle queries
-const { tryCatch } = require("#utils/tryCatch.js");
+const { tryCatch } = require("../../utils/tryCatch.js");
 
 // support methods
 const deleteFeedback = async (req, res) => {
@@ -22,20 +22,29 @@ const deleteFeedback = async (req, res) => {
   const studentsFilter = req.studentsFilter;
 
   //   checking if the feedback exists
-  feedback = await tryCatch(Feedback.findOne(feedbackFilter));
-  if (feedback?.notOkay) return res.status(500).json(feedback?.error);
+  feedback = await tryCatch(
+    Feedback.findOne(feedbackFilter)
+  );
+  if (feedback?.notOkay)
+    return res.status(500).json(feedback?.error);
 
   if (!feedback) {
     return res.status(409).json("feedback does'nt exists");
   }
 
   // deleting the feedback
-  feedback = await tryCatch(await Feedback.deleteOne(feedbackFilter));
-  if (feedback?.notOkay) return res.status(500).json(feedback?.error);
+  feedback = await tryCatch(
+    await Feedback.deleteOne(feedbackFilter)
+  );
+  if (feedback?.notOkay)
+    return res.status(500).json(feedback?.error);
 
   //   deleting the respective report
-  report = await tryCatch(await Report.deleteOne(feedbackFilter));
-  if (report?.notOkay) return res.status(500).json(report?.error);
+  report = await tryCatch(
+    await Report.deleteOne(feedbackFilter)
+  );
+  if (report?.notOkay)
+    return res.status(500).json(report?.error);
 
   //   removing feedback details from the students profile
   students = await tryCatch(
@@ -48,9 +57,12 @@ const deleteFeedback = async (req, res) => {
       },
     })
   );
-  if (students?.notOkay) return res.status(500).json(students?.error);
+  if (students?.notOkay)
+    return res.status(500).json(students?.error);
 
-  return res.status(200).json({ message: "feedback deleted successfully" });
+  return res
+    .status(200)
+    .json({ message: "feedback deleted successfully" });
 };
 
 // main methods

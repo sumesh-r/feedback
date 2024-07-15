@@ -1,7 +1,7 @@
-const { Report } = require("#models/Report.js");
-const { Student } = require("#models/Student.js");
+const { Report } = require("../../models/Report.js");
+const { Student } = require("../../models/Student.js");
 // for handle queries
-const { tryCatch } = require("#utils/tryCatch.js");
+const { tryCatch } = require("../../utils/tryCatch.js");
 
 // support methods
 const getReport = async (req, res) => {
@@ -20,12 +20,18 @@ const getReport = async (req, res) => {
   const reportFilter = req.reportFilter;
 
   report = await tryCatch(
-    Report.findOne(reportFilter, "-_id -__v -updatedAt -createdAt")
+    Report.findOne(
+      reportFilter,
+      "-_id -__v -updatedAt -createdAt"
+    )
   );
-  if (report?.notOkay) return res.status.json(report?.error);
+  if (report?.notOkay)
+    return res.status.json(report?.error);
 
   if (!report) {
-    return res.status(409).json({ message: "report doesn't exists" });
+    return res
+      .status(409)
+      .json({ message: "report doesn't exists" });
   }
 
   return res.status(200).json(report);
@@ -63,12 +69,20 @@ const submitFeedbackForStudent = async (req, res) => {
   };
 
   report = await tryCatch(
-    Report.findOne(reportFilter, { _id: 0, createdAt: 0, updatedAt: 0 })
+    Report.findOne(reportFilter, {
+      _id: 0,
+      createdAt: 0,
+      updatedAt: 0,
+    })
   );
-  if (report?.notOkay) return res.status(500).json(report?.error);
+  if (report?.notOkay)
+    return res.status(500).json(report?.error);
 
-  let student = await tryCatch(Student.findOne(studentFilter));
-  if (student?.notOkay) return res.status(500).json(student?.error);
+  let student = await tryCatch(
+    Student.findOne(studentFilter)
+  );
+  if (student?.notOkay)
+    return res.status(500).json(student?.error);
   let alreadySubmitted = false;
 
   student.feedbacks.map((feedback, idx) => {
@@ -80,7 +94,9 @@ const submitFeedbackForStudent = async (req, res) => {
   });
 
   if (alreadySubmitted)
-    return res.status(200).json({ message: "no feedback to submit" });
+    return res
+      .status(200)
+      .json({ message: "no feedback to submit" });
 
   // const responseData = {
   //   ...reportFilter,
@@ -100,18 +116,27 @@ const submitFeedbackForStudent = async (req, res) => {
         if (subject.totalResponse === 0) {
           subject.subjectKnowledge = data.subjectKnowledge;
           subject.clearExplanation = data.clearExplanation;
-          subject.usageOfTeachingTools = data.usageOfTeachingTools;
+          subject.usageOfTeachingTools =
+            data.usageOfTeachingTools;
           subject.extraInput = data.extraInput;
-          subject.teacherStudentRelationship = data.teacherStudentRelationship;
+          subject.teacherStudentRelationship =
+            data.teacherStudentRelationship;
           subject.totalResponse = 1;
         } else {
           subject.subjectKnowledge =
-            (subject.subjectKnowledge + data.subjectKnowledge) / 2;
+            (subject.subjectKnowledge +
+              data.subjectKnowledge) /
+            2;
           subject.clearExplanation =
-            (subject.clearExplanation + data.clearExplanation) / 2;
+            (subject.clearExplanation +
+              data.clearExplanation) /
+            2;
           subject.usageOfTeachingTools =
-            (subject.usageOfTeachingTools + data.usageOfTeachingTools) / 2;
-          subject.extraInput = (subject.extraInput + data.extraInput) / 2;
+            (subject.usageOfTeachingTools +
+              data.usageOfTeachingTools) /
+            2;
+          subject.extraInput =
+            (subject.extraInput + data.extraInput) / 2;
           subject.teacherStudentRelationship =
             (subject.teacherStudentRelationship +
               data.teacherStudentRelationship) /
@@ -127,16 +152,22 @@ const submitFeedbackForStudent = async (req, res) => {
             subject.teacherStudentRelationship) /
           5;
 
-        subject.fourScaleRating = (subject.averageTotal / 10) * 4;
+        subject.fourScaleRating =
+          (subject.averageTotal / 10) * 4;
       }
       return subject;
     }),
   };
 
   report = await tryCatch(
-    Report.updateOne(reportFilter, { $set: updatedReport }, { upsert: true })
+    Report.updateOne(
+      reportFilter,
+      { $set: updatedReport },
+      { upsert: true }
+    )
   );
-  if (report?.notOkay) return res.status(500).json(report?.error);
+  if (report?.notOkay)
+    return res.status(500).json(report?.error);
 
   student = await tryCatch(
     Student.updateOne(studentFilter, {
@@ -145,7 +176,8 @@ const submitFeedbackForStudent = async (req, res) => {
       },
     })
   );
-  if (student?.notOkay) return res.status(500).json(student?.error);
+  if (student?.notOkay)
+    return res.status(500).json(student?.error);
 
   return res.status(200).json({
     message: "feedback Submitted",

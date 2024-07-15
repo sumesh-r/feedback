@@ -1,5 +1,5 @@
-const { Student } = require("#models/Student.js");
-const { tryCatch } = require("#utils/tryCatch.js");
+const { Student } = require("../../models/Student.js");
+const { tryCatch } = require("../../utils/tryCatch.js");
 
 const getStudent = async (req, res) => {
   /**
@@ -10,8 +10,11 @@ const getStudent = async (req, res) => {
   let student, studentFilter, studentProjection;
   studentFilter = req.studentFilter;
   studentProjection = req.studentProjection;
-  student = await tryCatch(Student.findOne(studentFilter, studentProjection));
-  if (student?.notOkay) return res.status(500).json(student?.error);
+  student = await tryCatch(
+    Student.findOne(studentFilter, studentProjection)
+  );
+  if (student?.notOkay)
+    return res.status(500).json(student?.error);
   return res.status(200).json(student);
 };
 
@@ -24,8 +27,11 @@ const getStudents = async (req, res) => {
   let students, studentsFilter, studentsProjection;
   studentsFilter = req.studentsFilter;
   studentsProjection = req.studentsProjection;
-  students = await tryCatch(Student.find(studentsFilter, studentsProjection));
-  if (students?.notOkay) return res.status(500).json(students?.error);
+  students = await tryCatch(
+    Student.find(studentsFilter, studentsProjection)
+  );
+  if (students?.notOkay)
+    return res.status(500).json(students?.error);
   return res.status(200).json(students);
 };
 
@@ -132,7 +138,9 @@ const getStudentsForAdmin = async (req, res) => {
   let studentsFilter, studentsProjection;
 
   if (!batch || !degree || !section) {
-    return res.status(400).json({ message: "need batch degree section" });
+    return res
+      .status(400)
+      .json({ message: "need batch degree section" });
   }
 
   studentsFilter = {

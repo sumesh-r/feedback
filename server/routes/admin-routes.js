@@ -3,47 +3,47 @@ const router = require("express").Router();
 require("dotenv").config();
 const {
   addFeedbackForAdmin,
-} = require("#feedbackControllers/cFeedbackControllers.js");
+} = require("../controllers/feedbackControllers/cFeedbackControllers.js");
 const {
   deleteFeedbackForAdmin,
-} = require("#feedbackControllers/dFeedbackControllers.js");
+} = require("../controllers/feedbackControllers/dFeedbackControllers.js");
 const {
   updateFeedbackForAdmin,
-} = require("#feedbackControllers/uFeedbackControllers.js");
+} = require("../controllers/feedbackControllers/uFeedbackControllers.js");
 const {
   getFeedbackForAdmin,
   getFeedbacksForAdmin,
-} = require("#feedbackControllers/rFeedbackControllers.js");
+} = require("../controllers/feedbackControllers/rFeedbackControllers.js");
 const {
   getReportForAdmin,
   getReportsForAdmin,
-} = require("#reportControllers/rReportControllers.js");
+} = require("../controllers/reportControllers/rReportControllers.js");
 const {
   getAdvisorsForAdmin,
-} = require("#advisorControllers/rAdvisorControllers.js");
+} = require("../controllers/advisorControllers/rAdvisorControllers.js");
 const {
   addAdvisorForAdmin,
-} = require("#advisorControllers/cAdvisorControllers.js");
+} = require("../controllers/advisorControllers/cAdvisorControllers.js");
 const {
   updateAdvisorForAdmin,
-} = require("#advisorControllers/uAdvisorControllers.js");
+} = require("../controllers/advisorControllers/uAdvisorControllers.js");
 const {
   deleteAdvisorForAdmin,
-} = require("#advisorControllers/dAdvisorControllers.js");
+} = require("../controllers/advisorControllers/dAdvisorControllers.js");
 const {
   addStudentForAdmin,
   addStudentsForAdmin,
-} = require("#studentControllers/cStudentControllers.js");
+} = require("../controllers/studentControllers/cStudentControllers.js");
 const {
   deleteStudentForAdmin,
-} = require("#studentControllers/dStudentControllers.js");
+} = require("../controllers/studentControllers/dStudentControllers.js");
 const {
   updateStudentForAdmin,
-} = require("#studentControllers/uStudentControllers.js");
+} = require("../controllers/studentControllers/uStudentControllers.js");
 const {
   getStudentForAdmin,
   getStudentsForAdmin,
-} = require("#studentControllers/rStudentControllers.js");
+} = require("../controllers/studentControllers/rStudentControllers.js");
 
 //  route - /api/a...
 // feedback

@@ -1,14 +1,19 @@
-const { Student } = require("#models/Student.js");
-const { tryCatch } = require("#utils/tryCatch.js");
+const { Student } = require("../../models/Student.js");
+const { tryCatch } = require("../../utils/tryCatch.js");
 
 const deleteStudent = async (req, res) => {
   /**
    * REQUIRED
    *  - req.regNo
    */
-  let student = await tryCatch(Student.deleteOne({ regNo: req.regNo }));
-  if (student?.notOkay) return res.status(500).json(student?.error);
-  return res.status(200).json({ message: "Student Deleted" });
+  let student = await tryCatch(
+    Student.deleteOne({ regNo: req.regNo })
+  );
+  if (student?.notOkay)
+    return res.status(500).json(student?.error);
+  return res
+    .status(200)
+    .json({ message: "Student Deleted" });
 };
 
 // main methods
@@ -36,13 +41,16 @@ const deleteStudentForAdvisor = async (req, res) => {
   };
 
   // see if the register number already exists
-  existingStudent = await tryCatch(Student.findOne(studentFilter));
+  existingStudent = await tryCatch(
+    Student.findOne(studentFilter)
+  );
   if (existingStudent?.notOkay)
     return res.status(500).json(existingStudent?.error);
 
-
   if (!existingStudent) {
-    return res.status(404).json({ message: "Student does'nt exists" });
+    return res
+      .status(404)
+      .json({ message: "Student does'nt exists" });
   }
 
   req.regNo = regNo;
@@ -67,12 +75,16 @@ const deleteStudentForAdmin = async (req, res) => {
   }
 
   // see if the register number already exists
-  existingStudent = await tryCatch(Student.find({ regNo: regNo }));
+  existingStudent = await tryCatch(
+    Student.find({ regNo: regNo })
+  );
   if (existingStudent?.notOkay)
     return res.status(500).json(existingStudent?.error);
 
   if (!existingStudent) {
-    return res.status(404).json({ message: "Student does'nt exists" });
+    return res
+      .status(404)
+      .json({ message: "Student does'nt exists" });
   }
   req.regNo = regNo;
   await deleteStudent(req, res);

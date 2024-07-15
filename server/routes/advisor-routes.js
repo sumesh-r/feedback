@@ -3,42 +3,45 @@ const router = require("express").Router();
 require("dotenv").config();
 const {
   addFeedbackForAdvisor,
-} = require("#feedbackControllers/cFeedbackControllers.js");
+} = require("../controllers/feedbackControllers/cFeedbackControllers.js");
 const {
   deleteFeedbackForAdvisor,
-} = require("#feedbackControllers/dFeedbackControllers.js");
+} = require("../controllers/feedbackControllers/dFeedbackControllers.js");
 
 const {
   updateFeedbackForAdvisor,
-} = require("#feedbackControllers/uFeedbackControllers.js");
+} = require("../controllers/feedbackControllers/uFeedbackControllers.js");
 
 const {
   getFeedbackForAdvisor,
   getFeedbacksForAdvisor,
   getDashboardDetailsForAdvisor,
-} = require("#feedbackControllers/rFeedbackControllers.js");
+} = require("../controllers/feedbackControllers/rFeedbackControllers.js");
 
 const {
   addStudentForAdvisor,
   addStudentsForAdvisor,
-} = require("#studentControllers/cStudentControllers.js");
+} = require("../controllers/studentControllers/cStudentControllers.js");
 const {
   deleteStudentForAdvisor,
-} = require("#studentControllers/dStudentControllers.js");
+} = require("../controllers/studentControllers/dStudentControllers.js");
 const {
   updateStudentForAdvisor,
-} = require("#studentControllers/uStudentControllers.js");
+} = require("../controllers/studentControllers/uStudentControllers.js");
 const {
   getStudentForAdvisor,
   getStudentsForAdvisor,
-} = require("#studentControllers/rStudentControllers.js");
+} = require("../controllers/studentControllers/rStudentControllers.js");
 
 //  route - /api/advisor...
 // feedback
 router.post("/feedback/add", addFeedbackForAdvisor);
 router.post("/feedback/get", getFeedbackForAdvisor);
 router.get("/feedbacks/get", getFeedbacksForAdvisor);
-router.get("/feedback/dashboard/get", getDashboardDetailsForAdvisor);
+router.get(
+  "/feedback/dashboard/get",
+  getDashboardDetailsForAdvisor
+);
 router.post("/feedback/update", updateFeedbackForAdvisor);
 router.post("/feedback/delete", deleteFeedbackForAdvisor);
 

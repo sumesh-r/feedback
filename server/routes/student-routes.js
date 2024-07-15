@@ -3,13 +3,13 @@ const router = require("express").Router();
 require("dotenv").config();
 const {
   getFeedbackForStudent,
-} = require("#feedbackControllers/rFeedbackControllers.js");
+} = require("../controllers/feedbackControllers/rFeedbackControllers.js");
 const {
   submitFeedbackForStudent, // actually the data is saved in reports
-} = require("#reportControllers/uReportControllers.js")
+} = require("../controllers/reportControllers/uReportControllers.js");
 
 //  route - /api/student...
 router.get("/feedback/get", getFeedbackForStudent);
-router.post("/feedback/submit",submitFeedbackForStudent);
+router.post("/feedback/submit", submitFeedbackForStudent);
 
 module.exports = router;

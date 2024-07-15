@@ -1,10 +1,13 @@
-const { Feedback } = require("#models/Feedback.js");
-const { Report } = require("#models/Report.js");
-const { Student } = require("#models/Student.js");
+const { Feedback } = require("../../models/Feedback.js");
+const { Report } = require("../../models/Report.js");
+const { Student } = require("../../models/Student.js");
 // to create and convert feedbackNo in feedbacks
-const { romanize, roman_to_Int } = require("#utils/romans.js");
+const {
+  romanize,
+  roman_to_Int,
+} = require("../../utils/romans.js");
 // for handle queries
-const { tryCatch } = require("#utils/tryCatch.js");
+const { tryCatch } = require("../../utils/tryCatch.js");
 
 // support methods
 const addFeedback = async (req, res) => {
@@ -18,7 +21,12 @@ const addFeedback = async (req, res) => {
       - create the initial report
       - add the feedback details to the students profile.
  */
-  let feedbackNo, feedback, students, report, count, latestFeedback;
+  let feedbackNo,
+    feedback,
+    students,
+    report,
+    count,
+    latestFeedback;
 
   const feedbackFilter = req.feedbackFilter;
   const feedbackProjection = req.feedbackProjection;
@@ -47,7 +55,8 @@ const addFeedback = async (req, res) => {
       feedbackNo: feedbackNo,
     }).save()
   );
-  if (feedback?.notOkay) return res.status(500).json(feedback?.error);
+  if (feedback?.notOkay)
+    return res.status(500).json(feedback?.error);
 
   // create report
   report = await tryCatch(
@@ -56,7 +65,8 @@ const addFeedback = async (req, res) => {
       feedbackNo: feedbackNo,
     }).save()
   );
-  if (report?.notOkay) return res.status(500).json(report?.error);
+  if (report?.notOkay)
+    return res.status(500).json(report?.error);
 
   // add the feedback detail to students's profiles
   students = await tryCatch(
@@ -69,9 +79,12 @@ const addFeedback = async (req, res) => {
       },
     })
   );
-  if (students?.notOkay) return res.status(500).json(students?.error);
+  if (students?.notOkay)
+    return res.status(500).json(students?.error);
 
-  return res.status(200).json({ message: "feedback added successfully" });
+  return res
+    .status(200)
+    .json({ message: "feedback added successfully" });
 };
 
 // main methods

@@ -1,6 +1,6 @@
-const { Report } = require("#models/Report.js");
+const { Report } = require("../../models/Report.js");
 // for handle queries
-const { tryCatch } = require("#utils/tryCatch.js");
+const { tryCatch } = require("../../utils/tryCatch.js");
 
 // support methods
 const getReport = async (req, res) => {
@@ -19,12 +19,18 @@ const getReport = async (req, res) => {
   const reportFilter = req.reportFilter;
 
   report = await tryCatch(
-    Report.findOne(reportFilter, "-_id -__v -updatedAt -createdAt")
+    Report.findOne(
+      reportFilter,
+      "-_id -__v -updatedAt -createdAt"
+    )
   );
-  if (report?.notOkay) return res.status.json(report?.error);
+  if (report?.notOkay)
+    return res.status.json(report?.error);
 
   if (!report) {
-    return res.status(409).json({ message: "report doesn't exists" });
+    return res
+      .status(409)
+      .json({ message: "report doesn't exists" });
   }
 
   return res.status(200).json(report);
@@ -51,10 +57,13 @@ const getReports = async (req, res) => {
       "-_id -__v -createdAt -updatedAt -subjects -electiveSubjects"
     )
   );
-  if (reports?.notOkay) return res.status.json(reports?.error);
+  if (reports?.notOkay)
+    return res.status.json(reports?.error);
 
   if (!reports[0]) {
-    return res.status(409).json([{ message: "reports doesn't exists" }]);
+    return res
+      .status(409)
+      .json([{ message: "reports doesn't exists" }]);
   }
 
   return res.status(200).json(reports);

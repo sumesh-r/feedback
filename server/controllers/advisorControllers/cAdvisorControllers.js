@@ -1,5 +1,5 @@
-const { Staff } = require("#models/Staff.js");
-const { tryCatch } = require("#utils/tryCatch.js");
+const { Staff } = require("../../models/Staff.js");
+const { tryCatch } = require("../../utils/tryCatch.js");
 const bcrypt = require("bcrypt");
 
 const addAdvisorForAdmin = async (req, res) => {
@@ -12,7 +12,11 @@ const addAdvisorForAdmin = async (req, res) => {
    *  password: ""
    * }
    */
-  let advisor, hashPassword, advisorData, alreadyExists, advisorFilter;
+  let advisor,
+    hashPassword,
+    advisorData,
+    alreadyExists,
+    advisorFilter;
   const { userName, password } = req.body;
 
   advisorFilter = {
@@ -22,26 +26,38 @@ const addAdvisorForAdmin = async (req, res) => {
   };
 
   if (!userName || !password)
-    return res.status(409).json({ message: "need userName & password" });
-
-  advisor = await tryCatch(Staff.findOne({ userName: userName }));
-  if (advisor?.notOkay) return res.status(500).json(advisor?.error);
-
-  if (advisor) {
-    return res.status(409).json({ eMessage: "advisor already exists" });
-  }
-
-  alreadyExists = await tryCatch(Staff.findOne(advisorFilter));
-  if (advisor?.notOkay) return res.status(500).json(advisor?.error);
-
-  if (alreadyExists) {
     return res
       .status(409)
-      .json({ eMessage: "advisor already exists for that particular class" });
+      .json({ message: "need userName & password" });
+
+  advisor = await tryCatch(
+    Staff.findOne({ userName: userName })
+  );
+  if (advisor?.notOkay)
+    return res.status(500).json(advisor?.error);
+
+  if (advisor) {
+    return res
+      .status(409)
+      .json({ eMessage: "advisor already exists" });
+  }
+
+  alreadyExists = await tryCatch(
+    Staff.findOne(advisorFilter)
+  );
+  if (advisor?.notOkay)
+    return res.status(500).json(advisor?.error);
+
+  if (alreadyExists) {
+    return res.status(409).json({
+      eMessage:
+        "advisor already exists for that particular class",
+    });
   }
 
   hashPassword = await tryCatch(bcrypt.hash(password, 10));
-  if (hashPassword?.notOkay) return res.status(500).json(hashPassword?.error);
+  if (hashPassword?.notOkay)
+    return res.status(500).json(hashPassword?.error);
 
   advisorData = {
     batch: advisorFilter.batch,
@@ -59,7 +75,8 @@ const addAdvisorForAdmin = async (req, res) => {
       password: hashPassword,
     }).save()
   );
-  if (advisor?.notOkay) return res.status(500).json(advisor?.error);
+  if (advisor?.notOkay)
+    return res.status(500).json(advisor?.error);
 
   return res.status(200).json({ message: "Staff Added" });
 };

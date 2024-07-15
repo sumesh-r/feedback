@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
-const {newDate} = require("#utils/newDate.js")
+const { newDate } = require("./utils/newDate.js");
 
 // Variables
 const DB = process.env.DB;
@@ -13,7 +13,9 @@ module.exports = async () => {
   };
   try {
     await mongoose.connect(DB_URL, connectionParams);
-    console.log(`connected to ${DB} database   Date: ${newDate()}`);
+    console.log(
+      `connected to ${DB} database   Date: ${newDate()}`
+    );
   } catch (error) {
     console.log(error);
   }

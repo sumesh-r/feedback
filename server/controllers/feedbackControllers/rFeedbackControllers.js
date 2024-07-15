@@ -1,7 +1,7 @@
-const { Feedback } = require("#models/Feedback.js");
-const { Student } = require("#models/Student.js");
+const { Feedback } = require("../../models/Feedback.js");
+const { Student } = require("../../models/Student.js");
 // for handle queries
-const { tryCatch } = require("#utils/tryCatch.js");
+const { tryCatch } = require("../../utils/tryCatch.js");
 
 // support methods
 const getFeedback = async (req, res) => {
@@ -20,12 +20,18 @@ const getFeedback = async (req, res) => {
   const feedbackFilter = req.feedbackFilter;
 
   feedback = await tryCatch(
-    Feedback.findOne(feedbackFilter, "-_id -__v -updatedAt -createdAt")
+    Feedback.findOne(
+      feedbackFilter,
+      "-_id -__v -updatedAt -createdAt"
+    )
   );
-  if (feedback?.notOkay) return res.status.json(feedback?.error);
+  if (feedback?.notOkay)
+    return res.status.json(feedback?.error);
 
   if (!feedback) {
-    return res.status(409).json({ message: "feedback doesn't exists" });
+    return res
+      .status(409)
+      .json({ message: "feedback doesn't exists" });
   }
 
   return res.status(200).json(feedback);
@@ -52,10 +58,13 @@ const getFeedbacks = async (req, res) => {
       "-_id -__v -createdAt -updatedAt -subjects -electiveSubjects"
     )
   );
-  if (feedbacks?.notOkay) return res.status.json(feedbacks?.error);
+  if (feedbacks?.notOkay)
+    return res.status.json(feedbacks?.error);
 
   if (!feedbacks[0]) {
-    return res.status(409).json([{ message: "feedbacks doesn't exists" }]);
+    return res
+      .status(409)
+      .json([{ message: "feedbacks doesn't exists" }]);
   }
 
   return res.status(200).json(feedbacks);
@@ -135,7 +144,11 @@ const getFeedbackForStudent = async (req, res) => {
   /**
    BODY = {}
    */
-  let feedbackFilter, feedback, studentFilter, student, electiveSubjects;
+  let feedbackFilter,
+    feedback,
+    studentFilter,
+    student,
+    electiveSubjects;
   feedbackFilter = {
     batch: req.batch,
     degree: req.degree,
@@ -144,12 +157,18 @@ const getFeedbackForStudent = async (req, res) => {
   };
 
   feedback = await tryCatch(
-    Feedback.findOne(feedbackFilter, "-_id -__v -updatedAt -createdAt")
+    Feedback.findOne(
+      feedbackFilter,
+      "-_id -__v -updatedAt -createdAt"
+    )
   );
-  if (feedback?.notOkay) return res.status.json(feedback?.error);
+  if (feedback?.notOkay)
+    return res.status.json(feedback?.error);
 
   if (!feedback) {
-    return res.status(409).json({ message: "feedback doesn't exists" });
+    return res
+      .status(409)
+      .json({ message: "feedback doesn't exists" });
   }
 
   studentFilter = {
@@ -162,7 +181,9 @@ const getFeedbackForStudent = async (req, res) => {
     Student.findOne(studentFilter, { feedbacks: 1, _id: 0 })
   );
   if (student.feedbacks[0].isSubmitted)
-    return res.status(200).json({ message: "no feedback to submit" });
+    return res
+      .status(200)
+      .json({ message: "no feedback to submit" });
   // const data = subjects.find(
   //   (sub) => sub.subjectCode === subject.subjectCode
   // );
@@ -198,10 +219,13 @@ const getDashboardDetailsForAdvisor = async (req, res) => {
   feedback = await tryCatch(
     Feedback.findOne(feedbackFilter, "-subjects -_id -__v")
   );
-  if (feedback?.notOkay) return res.status(500).json(feedback?.error);
+  if (feedback?.notOkay)
+    return res.status(500).json(feedback?.error);
 
   if (!feedback) {
-    return res.status(200).json({ message: "there is no live feedback" });
+    return res
+      .status(200)
+      .json({ message: "there is no live feedback" });
   }
 
   studentsFilter = {
@@ -220,15 +244,21 @@ const getDashboardDetailsForAdvisor = async (req, res) => {
 
   // get the list of students who have not submitted the feedback
   notSubmittedStudents = await tryCatch(
-    Student.find(studentsFilter, studentsProjection).sort({ regNo: 1 })
+    Student.find(studentsFilter, studentsProjection).sort({
+      regNo: 1,
+    })
   );
   if (notSubmittedStudents?.notOkay)
-    return res.status(500).json(notSubmittedStudents?.error);
+    return res
+      .status(500)
+      .json(notSubmittedStudents?.error);
   if (!notSubmittedStudents[0]) {
     return res.status(200).json({ message: "no students" });
   }
   // return the list of not submittedStudents and the live feedback
-  return res.status(200).json({ notSubmittedStudents, feedback });
+  return res
+    .status(200)
+    .json({ notSubmittedStudents, feedback });
 };
 
 module.exports = {

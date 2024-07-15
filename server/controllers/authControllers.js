@@ -5,7 +5,8 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const JWT_SECRET_KEY = process.env.JWT;
-const IS_DEVELOPMENT = process.env.IS_DEVELOPMENT === "true";
+const IS_DEVELOPMENT =
+  process.env.IS_DEVELOPMENT === "true";
 
 let secureAndSameSite = {};
 
@@ -24,7 +25,8 @@ const studentLogin = async (req, res) => {
   // * checking if all three values are available
   if (!regNo || !dob || !password) {
     return res.status(400).json({
-      eMessage: "need register number, date of birth and password",
+      eMessage:
+        "need register number, date of birth and password",
       path: "student",
     });
   }
@@ -37,25 +39,34 @@ const studentLogin = async (req, res) => {
     return new Error(err);
   }
   if (!student) {
-    return res
-      .status(404)
-      .json({ eMessage: "user not found", path: "student" });
+    return res.status(404).json({
+      eMessage: "user not found",
+      path: "student",
+    });
   }
 
   // * Check if the dob and password are correct
   const isDobCorrect = dob === student.dob;
-  const isPasswordCorrect = bcrypt.compareSync(password, student.password);
+  const isPasswordCorrect = bcrypt.compareSync(
+    password,
+    student.password
+  );
 
   if (!isPasswordCorrect || !isDobCorrect) {
-    return res
-      .status(401)
-      .json({ eMessage: "Invalid Credential", path: "student" });
+    return res.status(401).json({
+      eMessage: "Invalid Credential",
+      path: "student",
+    });
   }
 
   // * Generating Token
-  const accessToken = jwt.sign({ id: student.regNo }, JWT_SECRET_KEY, {
-    expiresIn: "1d",
-  });
+  const accessToken = jwt.sign(
+    { id: student.regNo },
+    JWT_SECRET_KEY,
+    {
+      expiresIn: "1d",
+    }
+  );
 
   // Create secure cookie with refresh token
   res.cookie("token", accessToken, {
@@ -83,11 +94,14 @@ const studentLogout = async (req, res) => {
 const staffLogin = async (req, res) => {
   const { userName, password } = req.body;
 
+  console.log(req.body);
+
   // * checking if all three values are available
   if (!userName || !password) {
-    return res
-      .status(401)
-      .json({ eMessage: "need userName and password", path: "staff" });
+    return res.status(401).json({
+      eMessage: "need userName and password",
+      path: "staff",
+    });
   }
 
   // * find the student if available
@@ -97,23 +111,34 @@ const staffLogin = async (req, res) => {
   } catch (err) {
     return new Error(err);
   }
+
   if (!staff) {
-    return res.status(404).json({ eMessage: "user not found", path: "staff" });
+    return res
+      .status(404)
+      .json({ eMessage: "user not found", path: "staff" });
   }
 
   // * Check if the password are correct
-  const isPasswordCorrect = bcrypt.compareSync(password, staff.password);
+  const isPasswordCorrect = bcrypt.compareSync(
+    password,
+    staff.password
+  );
 
   if (!isPasswordCorrect) {
-    return res
-      .status(400)
-      .json({ eMessage: "Invalid Credential", path: "staff" });
+    return res.status(400).json({
+      eMessage: "Invalid Credential",
+      path: "staff",
+    });
   }
 
   // * Generating Token
-  const accessToken = jwt.sign({ id: String(staff.userName) }, JWT_SECRET_KEY, {
-    expiresIn: "1d",
-  });
+  const accessToken = jwt.sign(
+    { id: String(staff.userName) },
+    JWT_SECRET_KEY,
+    {
+      expiresIn: "1d",
+    }
+  );
 
   // Create secure cookie with refresh token
   res.cookie("token", accessToken, {

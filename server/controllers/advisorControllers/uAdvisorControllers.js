@@ -1,5 +1,5 @@
-const { Staff } = require("#models/Staff.js");
-const { tryCatch } = require("#utils/tryCatch.js");
+const { Staff } = require("../../models/Staff.js");
+const { tryCatch } = require("../../utils/tryCatch.js");
 
 const updateAdvisorForAdmin = async (req, res) => {
   /**
@@ -27,26 +27,36 @@ const updateAdvisorForAdmin = async (req, res) => {
     section: req.body.section,
   };
 
-  advisor = await tryCatch(Staff.findOne(advisorUpdateFilter));
-  if (advisor?.notOkay) return res.status(500).json(advisor?.error);
+  advisor = await tryCatch(
+    Staff.findOne(advisorUpdateFilter)
+  );
+  if (advisor?.notOkay)
+    return res.status(500).json(advisor?.error);
 
   if (!advisor) {
-    return res.status(409).json({ eMessage: "staff does'nt exists" });
+    return res
+      .status(409)
+      .json({ eMessage: "staff does'nt exists" });
   }
 
-  advisor = await tryCatch(Staff.findOne(advisorUpdateData));
-  if (advisor?.notOkay) return res.status(500).json(advisor?.error);
+  advisor = await tryCatch(
+    Staff.findOne(advisorUpdateData)
+  );
+  if (advisor?.notOkay)
+    return res.status(500).json(advisor?.error);
 
   if (advisor) {
     return res.status(409).json({
-      eMessage: "advisor already exists for that particular class",
+      eMessage:
+        "advisor already exists for that particular class",
     });
   }
 
   advisor = await tryCatch(
     Staff.updateOne(advisorUpdateFilter, advisorUpdateData)
   );
-  if (advisor?.notOkay) return res.status(500).json(advisor?.error);
+  if (advisor?.notOkay)
+    return res.status(500).json(advisor?.error);
 
   return res.status(200).json({ message: "Staff updated" });
 };

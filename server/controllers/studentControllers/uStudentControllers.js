@@ -1,5 +1,5 @@
-const { Student } = require("#models/Student.js");
-const { tryCatch } = require("#utils/tryCatch.js");
+const { Student } = require("../../models/Student.js");
+const { tryCatch } = require("../../utils/tryCatch.js");
 
 const updateStudent = async (req, res) => {
   /**
@@ -13,13 +13,18 @@ const updateStudent = async (req, res) => {
       updateData.dob
     )
   ) {
-    return res.status(409).json({ eMessage: "incorrect dob format" });
+    return res
+      .status(409)
+      .json({ eMessage: "incorrect dob format" });
   }
   let student = await tryCatch(
     Student.updateOne({ regNo: req.regNo }, updateData)
   );
-  if (student?.notOkay) return res.status(500).json(student?.error);
-  return res.status(200).json({ message: "Student updated" });
+  if (student?.notOkay)
+    return res.status(500).json(student?.error);
+  return res
+    .status(200)
+    .json({ message: "Student updated" });
 };
 
 // main methods
@@ -39,7 +44,9 @@ const updateStudentForAdvisor = async (req, res) => {
   let existingStudent, studentFilter, updateData;
 
   if (!regNo || !name || !dob) {
-    return res.status(400).json({ message: "need regNo name dob" });
+    return res
+      .status(400)
+      .json({ message: "need regNo name dob" });
   }
   studentFilter = {
     regNo: regNo,
@@ -49,7 +56,9 @@ const updateStudentForAdvisor = async (req, res) => {
   };
 
   // see if the register number already exists
-  existingStudent = await tryCatch(Student.findOne(studentFilter));
+  existingStudent = await tryCatch(
+    Student.findOne(studentFilter)
+  );
   if (existingStudent?.notOkay)
     return res.status(500).json(existingStudent?.error);
 
@@ -59,7 +68,9 @@ const updateStudentForAdvisor = async (req, res) => {
   };
 
   if (!existingStudent) {
-    return res.status(404).json({ message: "Student does'nt exists" });
+    return res
+      .status(404)
+      .json({ message: "Student does'nt exists" });
   }
 
   req.regNo = regNo;
@@ -83,16 +94,22 @@ const updateStudentForAdmin = async (req, res) => {
   let existingStudent, updateData;
 
   if (!regNo || !name || !dob) {
-    return res.status(400).json({ message: "need regNo name dob" });
+    return res
+      .status(400)
+      .json({ message: "need regNo name dob" });
   }
 
   // see if the register number already exists
-  existingStudent = await tryCatch(Student.find({ regNo: regNo }));
+  existingStudent = await tryCatch(
+    Student.find({ regNo: regNo })
+  );
   if (existingStudent?.notOkay)
     return res.status(500).json(existingStudent?.error);
 
   if (!existingStudent) {
-    return res.status(404).json({ message: "Student does'nt exists" });
+    return res
+      .status(404)
+      .json({ message: "Student does'nt exists" });
   }
   updateData = {
     name: name.toUpperCase(),
@@ -101,7 +118,7 @@ const updateStudentForAdmin = async (req, res) => {
 
   req.regNo = regNo;
   req.updateData = updateData;
-  
+
   await updateStudent(req, res);
 };
 

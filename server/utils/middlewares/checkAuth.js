@@ -1,7 +1,7 @@
-const { Responses } = require("#models/Response.js");
+const { Responses } = require("../../models/Response.js");
 const jwt = require("jsonwebtoken");
-const { Staff } = require("#models/Staff.js");
-const { Student } = require("#models/Student.js");
+const { Staff } = require("../../models/Staff.js");
+const { Student } = require("../../models/Student.js");
 require("dotenv").config();
 
 const JWT_SECRET_KEY = process.env.JWT;
@@ -12,7 +12,9 @@ const checkStaffAuth = async (req, res, next) => {
   const token = req.cookies["token"];
   //send error message if no token is found:
   if (!token)
-    return res.status(401).json({ eMessage: "Access denied, token missing!" });
+    return res
+      .status(401)
+      .json({ eMessage: "Access denied, token missing!" });
 
   try {
     //if the incoming request has a valid token, we extract the payload from the
@@ -25,7 +27,9 @@ const checkStaffAuth = async (req, res, next) => {
       return new Error(err);
     }
     if (!staff || staff.role != "ADVISOR")
-      return res.status(401).json({ eMessage: "unAuthorized" });
+      return res
+        .status(401)
+        .json({ eMessage: "unAuthorized" });
 
     req.batch = staff.batch;
     req.degree = staff.degree;
@@ -36,11 +40,15 @@ const checkStaffAuth = async (req, res, next) => {
     if (error.name === "TokenExpiredError") {
       return res
         .status(401)
-        .json({ error: "Session timed out,please login again" });
+        .json({
+          error: "Session timed out,please login again",
+        });
     } else if (error.name === "JsonWebTokenError") {
       return res
         .status(401)
-        .json({ error: "Invalid token,please login again!" });
+        .json({
+          error: "Invalid token,please login again!",
+        });
     } else {
       //catch other unprecedented errors
       console.log("from checkAdminAuth");
@@ -54,7 +62,9 @@ const checkAdminAuth = async (req, res, next) => {
   const token = req.cookies["token"];
   //send error message if no token is found:
   if (!token)
-    return res.status(401).json({ eMessage: "Access denied, token missing!" });
+    return res
+      .status(401)
+      .json({ eMessage: "Access denied, token missing!" });
 
   try {
     //if the incoming request has a valid token, we extract the payload from the
@@ -67,7 +77,9 @@ const checkAdminAuth = async (req, res, next) => {
       return new Error(err);
     }
     if (!staff || staff.role != "ADMIN")
-      return res.status(401).json({ eMessage: "unAuthorized" });
+      return res
+        .status(401)
+        .json({ eMessage: "unAuthorized" });
 
     next();
   } catch (error) {
@@ -75,11 +87,15 @@ const checkAdminAuth = async (req, res, next) => {
     if (error.name === "TokenExpiredError") {
       return res
         .status(401)
-        .json({ error: "Session timed out,please login again" });
+        .json({
+          error: "Session timed out,please login again",
+        });
     } else if (error.name === "JsonWebTokenError") {
       return res
         .status(401)
-        .json({ error: "Invalid token,please login again!" });
+        .json({
+          error: "Invalid token,please login again!",
+        });
     } else {
       //catch other unprecedented errors
       console.log("from checkAdminAuth");
@@ -93,23 +109,32 @@ const checkStudentAuth = async (req, res, next) => {
   const token = req.cookies["token"];
   //send error message if no token is found:
   if (!token)
-    return res.status(401).json({ eMessage: "Access denied, token missing!" });
+    return res
+      .status(401)
+      .json({ eMessage: "Access denied, token missing!" });
 
   try {
     //if the incoming request has a valid token, we extract the payload from the
     //  token and attach it to the request object.
     const payload = jwt.verify(token, JWT_SECRET_KEY);
     if (!Number(payload.id)) {
-      return res.status(401).json({ eMessage: "unAuthorized" });
+      return res
+        .status(401)
+        .json({ eMessage: "unAuthorized" });
     }
 
     let student;
     try {
-      student = await Student.findOne({ regNo: payload.id });
+      student = await Student.findOne({
+        regNo: payload.id,
+      });
     } catch (err) {
       return new Error(err);
     }
-    if (!student) return res.status(401).json({ eMessage: "unAuthorized" });
+    if (!student)
+      return res
+        .status(401)
+        .json({ eMessage: "unAuthorized" });
 
     req.regNo = student.regNo;
     req.batch = student.batch;
@@ -121,11 +146,15 @@ const checkStudentAuth = async (req, res, next) => {
     if (error.name === "TokenExpiredError") {
       return res
         .status(401)
-        .json({ error: "Session timed out,please login again" });
+        .json({
+          error: "Session timed out,please login again",
+        });
     } else if (error.name === "JsonWebTokenError") {
       return res
         .status(401)
-        .json({ error: "Invalid token,please login again!" });
+        .json({
+          error: "Invalid token,please login again!",
+        });
     } else {
       //catch other unprecedented errors
       console.error(error);

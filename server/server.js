@@ -14,16 +14,18 @@ const {
   checkAdminAuth,
   checkStaffAuth,
   checkStudentAuth,
-} = require("#middlewares/checkAuth.js");
-const { staffLogin } = require("#controllers/authControllers.js");
+} = require("./utils/middlewares/checkAuth.js");
+const {
+  staffLogin,
+} = require("./controllers/authControllers.js");
 // for routes
-const studentRoutes = require("#routes/student-routes.js");
-const advisorRoutes = require("#routes/advisor-routes.js");
-const adminRoutes = require("#routes/admin-routes.js");
-const authRoutes = require("#routes/auth-routes.js");
+const studentRoutes = require("./routes/student-routes.js");
+const advisorRoutes = require("./routes/advisor-routes.js");
+const adminRoutes = require("./routes/admin-routes.js");
+const authRoutes = require("./routes/auth-routes.js");
 
 // for getting Date for console and log file
-const { newDate } = require("#utils/newDate.js");
+const { newDate } = require("./utils/newDate.js");
 
 // connecting to database
 connection();
@@ -31,7 +33,8 @@ connection();
 // Variables
 const PORT = process.env.PORT || 8080;
 const whitelist = process.env.FRONT_URL;
-const IS_DEVELOPMENT = process.env.IS_DEVELOPMENT === "true";
+const IS_DEVELOPMENT =
+  process.env.IS_DEVELOPMENT === "true";
 
 const corsOptions = {
   origin: whitelist,
@@ -64,9 +67,13 @@ const update_Image = (req, res) => {
     );
     cp.exec('echo "updateScript client" >> mypipe');
   } else {
-    return res.status(400).json({ eMessage: "bad request" });
+    return res
+      .status(400)
+      .json({ eMessage: "bad request" });
   }
-  return res.status(200).json({ server: isServer, client: isClient });
+  return res
+    .status(200)
+    .json({ server: isServer, client: isClient });
 };
 
 // middlewares
@@ -92,7 +99,9 @@ app.use("/api/a", checkAdminAuth, adminRoutes);
 // listening to port
 try {
   app.listen(PORT, () => {
-    console.log(`listening on port ${PORT}  Date: ${newDate()}`);
+    console.log(
+      `listening on port ${PORT}  Date: ${newDate()}`
+    );
   });
 } catch (err) {
   console.log(err);

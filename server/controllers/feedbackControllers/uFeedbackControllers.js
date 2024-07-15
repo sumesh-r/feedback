@@ -1,15 +1,18 @@
-const { Feedback } = require("#models/Feedback.js");
-const { Report } = require("#models/Report.js");
-const { Student } = require("#models/Student.js");
+const { Feedback } = require("../../models/Feedback.js");
+const { Report } = require("../../models/Report.js");
+const { Student } = require("../../models/Student.js");
 // for handle queries
-const { tryCatch } = require("#utils/tryCatch.js");
+const { tryCatch } = require("../../utils/tryCatch.js");
 
 // support methods
 // this method will get a array subjects and return list of how many times a id is repeated
 const countBy = (d, id) =>
   d.reduce(
     (r, { subjectCode }, i, a) => (
-      (r[subjectCode] = a.filter((x) => x.subjectCode == subjectCode).length), r
+      (r[subjectCode] = a.filter(
+        (x) => x.subjectCode == subjectCode
+      ).length),
+      r
     ),
     {}
   );
@@ -78,26 +81,44 @@ const updateFeedback = async (req, res) => {
     isLive: req.body.isLive,
   };
   subjectsForFeedback = [...req.body.subjects];
-  electiveSubjectsForFeedback = [...req.body.electiveSubjects];
+  electiveSubjectsForFeedback = [
+    ...req.body.electiveSubjects,
+  ];
   // used to change the structure of elective subjects to fit with report
-  updateElectiveSubjectsData = [...req.body.electiveSubjects];
+  updateElectiveSubjectsData = [
+    ...req.body.electiveSubjects,
+  ];
 
   // get the required details from db
-  feedback = await tryCatch(Feedback.findOne(feedbackFilter));
-  if (feedback?.notOkay) return res.status(500).json(feedback?.error);
+  feedback = await tryCatch(
+    Feedback.findOne(feedbackFilter)
+  );
+  if (feedback?.notOkay)
+    return res.status(500).json(feedback?.error);
 
-  isLiveFeedback = await tryCatch(Feedback.findOne(isLiveFilter));
+  isLiveFeedback = await tryCatch(
+    Feedback.findOne(isLiveFilter)
+  );
   if (isLiveFeedback?.notOkay)
     return res.status(500).json(isLiveFeedback?.error);
 
   report = await tryCatch(Report.findOne(feedbackFilter));
-  if (report?.notOkay) return res.status(500).json(report?.error);
+  if (report?.notOkay)
+    return res.status(500).json(report?.error);
 
-  studentCount = await tryCatch(Student.find(studentsFilter).count());
-  if (studentCount?.notOkay) return res.status(500).json(studentCount?.error);
+  studentCount = await tryCatch(
+    Student.find(studentsFilter).count()
+  );
+  if (studentCount?.notOkay)
+    return res.status(500).json(studentCount?.error);
 
   // checking all data required exists in db
-  if (!feedback || !report || studentCount === 0 || studentCount === null) {
+  if (
+    !feedback ||
+    !report ||
+    studentCount === 0 ||
+    studentCount === null
+  ) {
     return res.status(409).json("feedback doesn't exists");
   }
 
@@ -107,7 +128,8 @@ const updateFeedback = async (req, res) => {
       feedback.semester === isLiveFeedback.semester &&
       feedback.feedbackNo === isLiveFeedback.feedbackNo;
 
-    isSameIsLive = updateData.isLive === isLiveFeedback.isLive;
+    isSameIsLive =
+      updateData.isLive === isLiveFeedback.isLive;
   }
 
   if (updateData.isLive)
@@ -126,38 +148,53 @@ const updateFeedback = async (req, res) => {
       },
     })
   );
-  if (feedback?.notOkay) return res.status(500).json(feedback?.error);
+  if (feedback?.notOkay)
+    return res.status(500).json(feedback?.error);
 
   // data for report
-  subjectsForReport = subjectsForFeedback.map((subject, idx) => {
-    return {
-      ...subject,
-      totalStrength: studentCount,
-    };
-  });
-  electiveSubjectCounts = countBy(updateElectiveSubjectsData, "subjectCode");
+  subjectsForReport = subjectsForFeedback.map(
+    (subject, idx) => {
+      return {
+        ...subject,
+        totalStrength: studentCount,
+      };
+    }
+  );
+  electiveSubjectCounts = countBy(
+    updateElectiveSubjectsData,
+    "subjectCode"
+  );
   uniqueElectiveSubjects = removeDuplicate(
     updateElectiveSubjectsData,
     "subjectCode"
   );
 
-  electiveSubjectsForReport = uniqueElectiveSubjects.map((subject, idx) => {
-    delete subject["regNo"];
-    return {
-      ...subject,
-      totalStrength: electiveSubjectCounts[String(subject.subjectCode)],
-    };
-  });
+  electiveSubjectsForReport = uniqueElectiveSubjects.map(
+    (subject, idx) => {
+      delete subject["regNo"];
+      return {
+        ...subject,
+        totalStrength:
+          electiveSubjectCounts[
+            String(subject.subjectCode)
+          ],
+      };
+    }
+  );
 
   // update report
   report = await tryCatch(
     Report.updateOne(feedbackFilter, {
       $set: {
-        subjects: [...subjectsForReport, ...electiveSubjectsForReport],
+        subjects: [
+          ...subjectsForReport,
+          ...electiveSubjectsForReport,
+        ],
       },
     })
   );
-  if (report?.notOkay) return res.status(500).json(report?.error);
+  if (report?.notOkay)
+    return res.status(500).json(report?.error);
 
   if (isIsLiveChangedTofalse)
     return res.status(200).json({
@@ -165,7 +202,9 @@ const updateFeedback = async (req, res) => {
         "another feedback is active so this feedback cannot be activated and other details have been updated",
     });
 
-  return res.status(200).json({ message: "feedback updated successfully" });
+  return res
+    .status(200)
+    .json({ message: "feedback updated successfully" });
 };
 
 // main methods
@@ -185,7 +224,9 @@ const updateFeedbackForAdvisor = async (req, res) => {
     !req.body.semester ||
     !req.body.feedbackNo
   )
-    return res.status(400).json({ eMessage: "need more data" });
+    return res
+      .status(400)
+      .json({ eMessage: "need more data" });
 
   const feedbackfilter = {
     batch: req.batch,
@@ -237,7 +278,9 @@ const updateFeedbackForAdmin = async (req, res) => {
     !req.body.semester ||
     !req.body.feedbackNo
   )
-    return res.status(400).json({ eMessage: "need more data" });
+    return res
+      .status(400)
+      .json({ eMessage: "need more data" });
 
   const feedbackfilter = {
     batch: req.body.batch,
